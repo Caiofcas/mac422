@@ -4,11 +4,6 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
-#define PROTEGE 0
-#define LIBERA 1
-#define RODE 2
-#define RODEVEJA 3
-
 char **get_input(char *input) {
     char **command = malloc(8 * sizeof(char *));
     char *separator = " ";
@@ -33,7 +28,6 @@ int main() {
     char temp;
     pid_t child_pid;
     int stat_loc;
-    int cmd;
 
     while (1) {
         /*reads user input*/
