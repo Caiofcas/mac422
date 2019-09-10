@@ -3,6 +3,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <sys/stat.h>
 
 char **get_input(char *input) {
     /*Receives a string INPUT, which contains the user input, 
@@ -41,7 +42,7 @@ int main() {
     while (1) {
         /*Reads user input*/
         printf("shell> ");
-       
+     
         scanf("%[^\n]",input);
         scanf("%c",&temp);
         /*Parses it*/
@@ -57,7 +58,22 @@ int main() {
         } else if (child_pid == 0) {
             /*If child, call execvp on input*/
             /* Never returns if the call is successful */ 
-            if(execvp(command[0], command) < 0) {
+
+            /*Verifca se é um dos nossos comandos*/
+            if(strcmp(command[0],"protegepracaramba") == 0)
+                chmod(command[1],0000);
+            
+            else if(strcmp(command[0],"liberageral") == 0)
+                chmod(command[1],0777);
+
+            else if(strcmp(command[0],"rode") == 0)
+                printf("rode chamado\n");
+
+            else if(strcmp(command[0],"rodeveja") == 0)
+                printf("rodeveja chamado\n");
+
+            /*Se não for reconhecido, tenta executar*/
+            else if(execvp(command[0], command) < 0) {
                 perror(command[0]);
                 exit(1);
             }
