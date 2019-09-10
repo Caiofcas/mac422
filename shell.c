@@ -5,6 +5,8 @@
 #include <sys/wait.h>
 #include <sys/stat.h>
 
+#define TRUE 1
+
 char **get_input(char *input) {
     /*Receives a string INPUT, which contains the user input, 
     parses it and returns the COMMAND array, which contains 
@@ -38,47 +40,45 @@ int main() {
     char temp;
     pid_t child_pid;
     int stat_loc;
+    char *PATH;
+    int COMMANDCODE;
+    int EXECSTATUS;
 
-    while (1) {
-        /*Reads user input*/
+    while (TRUE) {
         printf("shell> ");
-     
+        
+        /* TODO: verify if 'enter' doesnt duplicate shell string */
         scanf("%[^\n]",input);
         scanf("%c",&temp);
-        /*Parses it*/
-        command = get_input(input);
-
-        /*Calls fork*/
+        command = get_input(input); /* 0: nome do programa, 1: path*/
+        
+        if(strcmp(command[0],"protegepracaramba") == 0)
+            COMMANDCODE = 0;
+        else if(strcmp(command[0],"liberageral") == 0)
+            COMMANDCODE = 1;
+        else if(strcmp(command[0],"rode") == 0)
+            COMMANDCODE = 2;
+        else if(strcmp(command[0],"rodeveja") == 0)
+            COMMANDCODE = 3;
+            
         child_pid = fork();
 
-        /*Error handling*/
-        if(child_pid < 0){
-            perror("fork failed");
+        if (child_pid < 0) {
+            perror("Forking child has failed");
             exit(1);
         } else if (child_pid == 0) {
-            /*If child, call execvp on input*/
-            /* Never returns if the call is successful */ 
-
-            /*Verifca se é um dos nossos comandos*/
-            if(strcmp(command[0],"protegepracaramba") == 0)
-                chmod(command[1],0000);
-            
-            else if(strcmp(command[0],"liberageral") == 0)
-                chmod(command[1],0777);
-
-            else if(strcmp(command[0],"rode") == 0)
-                printf("rode chamado\n");
-
-            else if(strcmp(command[0],"rodeveja") == 0)
-                printf("rodeveja chamado\n");
-
-            /*Se não for reconhecido, tenta executar*/
-            else if(execvp(command[0], command) < 0) {
-                perror(command[0]);
-                exit(1);
+            if (COMMANDCODE == 0) exit(chmod(command[1],0000));
+            else if (COMMANDCODE == 1) exit(chmod(command[1],0777));
+            else if (COMMANDCODE == 2) {
+                EXECSTATUS = execve(command[1], command, NULL);
+                exit(EXECSTATUS);
             }
-        } else {
-            /*If parent, wait for end of child process*/
+            else if (COMMANDCODE == 3) {
+                EXECSTATUS = execve(command[1], command, NULL); /* TODO: insert path in printf */
+                printf("programa xx retornou com codigo %d", EXECSTATUS);
+                exit(EXECSTATUS);
+            }
+        } else if (COMMANDCODE == 3) {
             waitpid(child_pid, &stat_loc, WUNTRACED);
         }
 
