@@ -6,8 +6,12 @@
 #include <sys/stat.h>
 
 #define TRUE 1
+#define RODE "rode"
+#define RODEVEJA "rodeveja"
+#define LIBERAGERAL "liberageral"
+#define PROTEGEPRACARAMBA "protegepracaramba"
 
-char **get_input(char *input) {
+char **parseInput(char *input) {
     /*Receives a string INPUT, which contains the user input, 
     parses it and returns the COMMAND array, which contains 
     the command in the first position, NULL in the last used 
@@ -36,30 +40,30 @@ char **get_input(char *input) {
 
 int main() {
     char **command;
-    char input[30];
+    char inputFromCommandLine[30];
     char temp;
     pid_t child_pid;
     int stat_loc;
     char *PATH;
-    int COMMANDCODE;
-    int EXECSTATUS;
+    int commandCodeFlag;
+    int execstatus;
 
     while (TRUE) {
         printf("shell> ");
         
         /* TODO: verify if 'enter' doesnt duplicate shell string */
-        scanf("%[^\n]",input);
+        scanf("%[^\n]",inputFromCommandLine);
         scanf("%c",&temp);
-        command = get_input(input); /* 0: nome do programa, 1: path*/
+        command = parseInput(inputFromCommandLine); /* 0: nome do programa, 1: path*/
         
-        if(strcmp(command[0],"protegepracaramba") == 0)
-            COMMANDCODE = 0;
-        else if(strcmp(command[0],"liberageral") == 0)
-            COMMANDCODE = 1;
-        else if(strcmp(command[0],"rode") == 0)
-            COMMANDCODE = 2;
-        else if(strcmp(command[0],"rodeveja") == 0)
-            COMMANDCODE = 3;
+        if(strcmp(command[0], PROTEGEPRACARAMBA) == 0)
+            commandCodeFlag = 0;
+        else if(strcmp(command[0], LIBERAGERAL) == 0)
+            commandCodeFlag = 1;
+        else if(strcmp(command[0], RODE) == 0)
+            commandCodeFlag = 2;
+        else if(strcmp(command[0], RODEVEJA) == 0)
+            commandCodeFlag = 3;
             
         child_pid = fork();
 
@@ -67,18 +71,18 @@ int main() {
             perror("Forking child has failed");
             exit(1);
         } else if (child_pid == 0) {
-            if (COMMANDCODE == 0) exit(chmod(command[1],0000));
-            else if (COMMANDCODE == 1) exit(chmod(command[1],0777));
-            else if (COMMANDCODE == 2) {
-                EXECSTATUS = execve(command[1], command, NULL);
-                exit(EXECSTATUS);
+            if (commandCodeFlag == 0) exit(chmod(command[1],0000));
+            else if (commandCodeFlag == 1) exit(chmod(command[1],0777));
+            else if (commandCodeFlag == 2) {
+                execstatus = execve(command[1], command, NULL);
+                exit(execstatus);
             }
-            else if (COMMANDCODE == 3) {
-                EXECSTATUS = execve(command[1], command, NULL); /* TODO: insert path in printf */
-                printf("programa xx retornou com codigo %d", EXECSTATUS);
-                exit(EXECSTATUS);
+            else if (commandCodeFlag == 3) {
+                execstatus = execve(command[1], command, NULL); /* TODO: insert path in printf */
+                printf("programa xx retornou com codigo %d", execstatus);
+                exit(execstatus);
             }
-        } else if (COMMANDCODE == 3) {
+        } else if (commandCodeFlag == 3) {
             waitpid(child_pid, &stat_loc, WUNTRACED);
         }
 
