@@ -56,6 +56,8 @@ int main() {
         scanf("%c",&temp);
         command = parseInput(inputFromCommandLine); /* 0: nome do programa, 1: path*/
         
+        commandCodeFlag = -1;
+
         if(strcmp(command[0], PROTEGEPRACARAMBA) == 0)
             commandCodeFlag = 0;
         else if(strcmp(command[0], LIBERAGERAL) == 0)
@@ -65,25 +67,29 @@ int main() {
         else if(strcmp(command[0], RODEVEJA) == 0)
             commandCodeFlag = 3;
             
-        child_pid = fork();
+        if (commandCodeFlag != -1)
+            child_pid = fork();
 
         if (child_pid < 0) {
             perror("Forking child has failed");
             exit(1);
-        } else if (child_pid == 0) {
-            if (commandCodeFlag == 0) exit(chmod(command[1],0000));
-            else if (commandCodeFlag == 1) exit(chmod(command[1],0777));
+        } 
+        
+        if (child_pid == 0) {
+            if (commandCodeFlag == 0) exit(chmod(command[1], 0000));
+            else if (commandCodeFlag == 1) exit(chmod(command[1], 0777));
             else if (commandCodeFlag == 2) {
-                execstatus = execve(command[1], command, NULL);
-                exit(execstatus);
+                /*execstatus = */execve(command[1], command, NULL);
+                exit(0);
             }
             else if (commandCodeFlag == 3) {
-                execstatus = execve(command[1], command, NULL); /* TODO: insert path in printf */
-                printf("programa xx retornou com codigo %d", execstatus);
-                exit(execstatus);
+                execve(command[1], command, NULL); /* TODO: insert path in printf */
             }
-        } else if (commandCodeFlag == 3) {
-            waitpid(child_pid, &stat_loc, WUNTRACED);
+        } else {
+            if (commandCodeFlag == 3) {
+                waitpid(child_pid, &stat_loc, 0);
+                printf("--- Child ---\nCurrent PID: %d and Child PID: %d\n", getpid(), child_pid);
+            }
         }
 
         free(command);
