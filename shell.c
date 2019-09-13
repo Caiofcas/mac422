@@ -1,3 +1,8 @@
+/*
+* Artur Magalhaes, 10297734 e Caio Fontes, <-.->
+* MAC0422 - Shell
+*/
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -10,6 +15,7 @@
 #define RODEVEJA "rodeveja"
 #define LIBERAGERAL "liberageral"
 #define PROTEGEPRACARAMBA "protegepracaramba"
+#define DISABLED -1
 
 char **parseInput(char *input) {
     /*Receives a string INPUT, which contains the user input, 
@@ -44,19 +50,16 @@ int main() {
     char temp;
     pid_t child_pid;
     int stat_loc;
-    char *PATH;
     int commandCodeFlag;
-    int execstatus;
 
     while (TRUE) {
         printf("shell> ");
         
-        /* TODO: verify if 'enter' doesnt duplicate shell string */
         scanf("%[^\n]",inputFromCommandLine);
         scanf("%c",&temp);
-        command = parseInput(inputFromCommandLine); /* 0: nome do programa, 1: path*/
+        command = parseInput(inputFromCommandLine); /* 0: program name, 1: path*/
         
-        commandCodeFlag = -1;
+        commandCodeFlag = DISABLED;
 
         if(strcmp(command[0], PROTEGEPRACARAMBA) == 0)
             commandCodeFlag = 0;
@@ -67,7 +70,7 @@ int main() {
         else if(strcmp(command[0], RODEVEJA) == 0)
             commandCodeFlag = 3;
             
-        if (commandCodeFlag != -1)
+        if (commandCodeFlag != DISABLED)
             child_pid = fork();
 
         if (child_pid < 0) {
@@ -75,16 +78,12 @@ int main() {
             exit(1);
         } 
         
+        /* TODO: After running rode, shell should show up immediately (it needs a 'enter')*/
         if (child_pid == 0) {
-            if (commandCodeFlag == 0) exit(chmod(command[1], 0000));
+            if      (commandCodeFlag == 0) exit(chmod(command[1], 0000));
             else if (commandCodeFlag == 1) exit(chmod(command[1], 0777));
-            else if (commandCodeFlag == 2) {
-                /*execstatus = */
-                exit(execve(command[1], command, NULL));
-            }
-            else if (commandCodeFlag == 3) {
-                execve(command[1], command, NULL); /* TODO: insert path in printf */
-            }
+            else if (commandCodeFlag == 2) exit(execve(command[1], command, NULL));
+            else if (commandCodeFlag == 3) execve(command[1], command, NULL);
         } else {
             if (commandCodeFlag == 3) {
                 waitpid(child_pid, &stat_loc, 0);
