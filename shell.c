@@ -79,8 +79,8 @@ int main() {
             if (commandCodeFlag == 0) exit(chmod(command[1], 0000));
             else if (commandCodeFlag == 1) exit(chmod(command[1], 0777));
             else if (commandCodeFlag == 2) {
-                /*execstatus = */execve(command[1], command, NULL);
-                exit(0);
+                /*execstatus = */
+                exit(execve(command[1], command, NULL));
             }
             else if (commandCodeFlag == 3) {
                 execve(command[1], command, NULL); /* TODO: insert path in printf */
@@ -88,7 +88,7 @@ int main() {
         } else {
             if (commandCodeFlag == 3) {
                 waitpid(child_pid, &stat_loc, 0);
-                printf("--- Child ---\nCurrent PID: %d and Child PID: %d\n", getpid(), child_pid);
+                printf("=> programa '%s' retornou com codigo %d\n", command[1], WEXITSTATUS(stat_loc));
             }
         }
 
