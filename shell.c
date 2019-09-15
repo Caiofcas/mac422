@@ -85,7 +85,7 @@ int main() {
             else if (commandCodeFlag == 3) execve(command[1], command, NULL);
         } else {
             if (commandCodeFlag == 3) {
-                wait(&stat_loc);
+                waitpid(child_pid,&stat_loc,0);
                 printf("=> programa '%s' retornou com codigo %d\n", command[1], WEXITSTATUS(stat_loc));
             }
         }
