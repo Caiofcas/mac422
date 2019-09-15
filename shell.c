@@ -1,5 +1,5 @@
 /*
-* Artur Magalhaes, 10297734 e Caio Fontes, <-.->
+* Artur Magalhaes, 10297734 e Caio Fontes, 10692061
 * MAC0422 - Shell
 */
 
@@ -76,9 +76,8 @@ int main() {
         if (child_pid < 0) {
             perror("Forking child has failed");
             exit(1);
-        } 
+        }
         
-        /* TODO: After running rode, shell should show up immediately (it needs a 'enter')*/
         if (child_pid == 0) {
             if      (commandCodeFlag == 0) exit(chmod(command[1], 0000));
             else if (commandCodeFlag == 1) exit(chmod(command[1], 0777));
@@ -86,7 +85,7 @@ int main() {
             else if (commandCodeFlag == 3) execve(command[1], command, NULL);
         } else {
             if (commandCodeFlag == 3) {
-                waitpid(child_pid, &stat_loc, 0);
+                wait(&stat_loc);
                 printf("=> programa '%s' retornou com codigo %d\n", command[1], WEXITSTATUS(stat_loc));
             }
         }
