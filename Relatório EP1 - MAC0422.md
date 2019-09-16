@@ -30,6 +30,10 @@ Os comandos *liberageral* e *protegepracaramba* foram implementados através da 
 
 O comando *rodeveja* foi implementado utilizando as chamadas *execve* - chamada pelo processo filho para executar o programa passado como argumento - e *waitpid* - chamada pelo processo pai para que ele espere a execução do processo filho.
 
-O comando *rode* também utilizou a chamada *execve*, porém o processo pai não espera o seu término.
+O comando *rode* também utilizou a chamada *execve*, esperando a execução do filho, diferindo de *rodeveja* apenas na impressão do código de 
+retorno.
 
 ## Problemas Enfrentados
+
+Tivemos alguns problemas relacionados ao retorno do filho, e em qual seria a forma apropriada de implementar essa solução. Ler o livro
+recomendado na disciplina junto a tutoriais, conseguimos alcançar o formato desejado.

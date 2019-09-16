@@ -18,14 +18,16 @@
 #define DISABLED -1
 
 char **parseInput(char *input) {
-    /* Receives a string INPUT, which contains the user input, 
+    /* 
+    Receives a string INPUT, which contains the user input, 
     parses it and returns the COMMAND array, which contains 
     the command in the first position, NULL in the last used 
     position, and the arguments passed in the middle positions.
     
     Ex: input = "ls -l -a"
     
-    returns: command = ["ls","-l","-a",NULL, ...]*/
+    returns: command = ["ls","-l","-a",NULL, ...]
+    */
     
     char **command = malloc(8 * sizeof(char *));
     char *separator = " ";
@@ -86,8 +88,7 @@ int main() {
         } else {
             if (commandCodeFlag == 2) 
                 waitpid(child_pid, &stat_loc, 0);
-            
-            if (commandCodeFlag == 3) {
+            else if (commandCodeFlag == 3) {
                 waitpid(child_pid, &stat_loc, 0);
                 printf("\n=> programa '%s' retornou com codigo %d\n", command[1], WEXITSTATUS(stat_loc));
             }
