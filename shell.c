@@ -52,7 +52,7 @@ void rode(char ** cmd) {
     exit(execve(cmd[1], cmd, NULL));
 }
 
-int main() {
+int main(void) {
     char **command;
     char inputFromCommandLine[30];
     char temp;
