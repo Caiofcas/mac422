@@ -49,13 +49,8 @@ char **parseInput(char *input) {
 
 void rode(char ** cmd) {
     int fd;
-    close(STDERR_FILENO);
-    close(STDOUT_FILENO);
     close(STDIN_FILENO);
 
-    fd = open("/dev/null",O_RDWR);
-    dup(fd);
-    dup(fd);
     exit(execve(cmd[1], cmd, NULL));
 }
 
