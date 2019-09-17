@@ -9,6 +9,7 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <sys/stat.h>
+#include <fcntl.h>
 
 #define TRUE 1
 #define RODE "rode"
@@ -44,6 +45,18 @@ char **parseInput(char *input) {
 
     command[index] = NULL;
     return command;
+}
+
+void rode(char ** cmd) {
+    int fd;
+    close(STDERR_FILENO);
+    close(STDOUT_FILENO);
+    close(STDIN_FILENO);
+
+    fd = open("/dev/null",O_RDWR);
+    dup(fd);
+    dup(fd);
+    exit(execve(cmd[1], cmd, NULL));
 }
 
 int main() {
@@ -83,12 +96,10 @@ int main() {
         if (child_pid == 0) {
             if      (commandCodeFlag == 0) exit(chmod(command[1], 0000));
             else if (commandCodeFlag == 1) exit(chmod(command[1], 0777));
-            else if (commandCodeFlag == 2) execve(command[1], command, NULL);
+            else if (commandCodeFlag == 2) rode(command);
             else if (commandCodeFlag == 3) execve(command[1], command, NULL);
         } else {
-            if (commandCodeFlag == 2) 
-                waitpid(child_pid, &stat_loc, 0);
-            else if (commandCodeFlag == 3) {
+            if (commandCodeFlag == 3) {
                 waitpid(child_pid, &stat_loc, 0);
                 printf("\n=> programa '%s' retornou com codigo %d\n", command[1], WEXITSTATUS(stat_loc));
             }
