@@ -48,9 +48,7 @@ char **parseInput(char *input) {
 }
 
 void rode(char ** cmd) {
-    int fd;
     close(STDIN_FILENO);
-
     exit(execve(cmd[1], cmd, NULL));
 }
 
