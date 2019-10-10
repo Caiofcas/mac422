@@ -8,10 +8,7 @@ libc_FILES=" \
 	__exit.c \
 	_access.c \
 	_alarm.c \
-#/* ######################################################## */
-	_batch.c \
-	_unbatch.c \
-#/* ######################################################## */
+    _batch.c \
 	_cfgetispeed.c \
 	_cfgetospeed.c \
 	_cfsetispeed.c \
@@ -96,6 +93,7 @@ libc_FILES=" \
 	_umask.c \
 	_umount.c \
 	_uname.c \
+    _unbatch.c \
 	_unlink.c \
 	_utime.c \
 	_wait.c \
