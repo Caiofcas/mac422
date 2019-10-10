@@ -8,6 +8,10 @@ libc_FILES=" \
 	__exit.c \
 	_access.c \
 	_alarm.c \
+#/* ######################################################## */
+	_batch.c \
+	_unbatch.c \
+#/* ######################################################## */
 	_cfgetispeed.c \
 	_cfgetospeed.c \
 	_cfsetispeed.c \
