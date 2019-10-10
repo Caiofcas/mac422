@@ -427,3 +427,18 @@ int ep;
   return(_syscall(FS_PROC_NR, WRITE, &m));
 }
 
+
+/* ######################################################## */
+int do_batch()
+{
+    printf("Batch called\n");
+    return (OK);
+}
+
+
+int do_unbatch()
+{
+    printf("Unbatch called\n");
+    return (OK);
+}
+/* ######################################################## */
