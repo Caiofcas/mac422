@@ -63,20 +63,20 @@ _PROTOTYPE (int (*call_vec[NCALLS]), (void) ) = {
 	do_getset,	/* 46 = setgid	*/
 	do_getset,	/* 47 = getgid	*/
 	no_sys,		/* 48 = (signal)*/
-
-/* ######################################################## */
-	do_batch,	/* 49 = batch	*/
-	do_unbatch,	/* 50 = unbatch	*/
-/* ######################################################## */
-	
+	no_sys,		/* 49 = unused	*/
+	no_sys,		/* 50 = unused	*/
 	no_sys,		/* 51 = (acct)	*/
 	no_sys,		/* 52 = (phys)	*/
 	no_sys,		/* 53 = (lock)	*/
 	no_sys,		/* 54 = ioctl	*/
 	no_sys,		/* 55 = fcntl	*/
 	no_sys,		/* 56 = (mpx)	*/
-	no_sys,		/* 57 = unused	*/
-	no_sys,		/* 58 = unused	*/
+
+/* ######################################################## */
+	do_batch,		/* 57 = batch	*/
+	do_unbatch,		/* 58 = unbatch	*/
+/* ######################################################## */
+	
 	do_exec,	/* 59 = execve	*/
 	no_sys,		/* 60 = umask	*/
 	no_sys,		/* 61 = chroot	*/

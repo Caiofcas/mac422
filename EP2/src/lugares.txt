@@ -1,5 +1,5 @@
 Definição das filas
-    table.c 99-113
+    kernel/table.c 99-113
 
 Array com os processos prontos
     proc.h 44
