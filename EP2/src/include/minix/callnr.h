@@ -16,7 +16,7 @@
 #define MKNOD		  14 
 #define CHMOD		  15 
 #define CHOWN		  16 
-#define BRK		  17
+#define BRK		      17
 #define STAT		  18 
 #define LSEEK		  19
 #define GETPID		  20
@@ -47,6 +47,12 @@
 #define LSTAT		  50
 #define IOCTL		  54
 #define FCNTL		  55
+
+/* ######################################################## */
+#define BATCH         57
+#define UNBATCH       58
+/* ######################################################## */
+
 #define EXEC		  59
 #define UMASK		  60 
 #define CHROOT		  61 
