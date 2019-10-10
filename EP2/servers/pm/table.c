@@ -66,7 +66,7 @@ _PROTOTYPE (int (*call_vec[NCALLS]), (void) ) = {
 
 /* ######################################################## */
 	do_batch,	/* 49 = batch	*/
-	do_unbatch,		/* 50 = unbatch	*/
+	do_unbatch,	/* 50 = unbatch	*/
 /* ######################################################## */
 	
 	no_sys,		/* 51 = (acct)	*/
