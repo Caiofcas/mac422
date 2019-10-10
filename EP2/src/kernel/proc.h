@@ -81,10 +81,13 @@ struct proc {
  * priority user processes to run round-robin with IDLE. 
  */
 #define NR_SCHED_QUEUES   16	/* MUST equal minimum priority + 1 */
-#define TASK_Q		   0	/* highest, used for kernel tasks */
-#define MAX_USER_Q  	   0    /* highest priority for user processes */   
-#define USER_Q  	   7    /* default (should correspond to nice 0) */   
-#define MIN_USER_Q	  14	/* minimum priority for user processes */
+#define TASK_Q		  0	        /* highest, used for kernel tasks */
+#define MAX_USER_Q  0         /* highest priority for user processes */   
+#define USER_Q  	  7         /* default (should correspond to nice 0) */
+/* ################################################## */
+#define BATCH_Q     13        /* NEW BATCH_Q*/
+/* ################################################## */
+#define MIN_USER_Q	14	  /* minimum priority for user processes */
 #define IDLE_Q		  15    /* lowest, only IDLE process goes here */
 
 /* Magic process table addresses. */
