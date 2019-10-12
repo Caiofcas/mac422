@@ -432,8 +432,7 @@ int ep;
 int do_batch()
 {
     int i = m_in.m1_i1;
-    printf("Batch called\n");
-    printf("\n%d\n",i);
+    printf("Batch called with pid %d\n",i);
     return (OK);
 }
 
