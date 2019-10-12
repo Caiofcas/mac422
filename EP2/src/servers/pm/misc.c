@@ -431,9 +431,33 @@ int ep;
 /* ######################################################## */
 int do_batch()
 {
-    int i = m_in.m1_i1;
-    printf("Batch called with pid %d\n",i);
-    return (OK);
+  int id = m_in.m1_i1;
+  int proc_nr;
+  register struct proc *rp;
+
+  printf("Batch called with pid %d\n",id);
+  /*Recover process from pid*/
+  proc_nr = proc_from_pid(id);
+  if(proc_nr == -1)
+    printf("Error: proc_from_pid(%d)\n",id);
+    return(-1);
+  
+  /*add process to BATCH_Q*/
+  /*code adapted from enqueue() in kernel/proc.c*/
+
+  rp = mproc[proc_nr];
+  
+  /* Now add the process to the queue. */
+  if (rdy_head[BATCH_Q] == NIL_PROC) {		/* add to empty queue */
+      rdy_head[BATCH_Q] = rdy_tail[BATCH_Q] = rp; 		/* create a new queue */
+      rp->p_nextready = NIL_PROC;		/* mark new end */
+  } 
+  else {				/* add to head of queue */
+      rp->p_nextready = rdy_head[BATCH_Q];		/* chain head of queue */
+      rdy_head[BATCH_Q] = rp;				/* set new queue head */
+  }
+			
+  return (OK);
 }
 
 
