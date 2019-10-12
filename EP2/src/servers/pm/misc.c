@@ -431,7 +431,9 @@ int ep;
 /* ######################################################## */
 int do_batch()
 {
+    int i = m_in.m1_i1;
     printf("Batch called\n");
+    printf("\n%d\n",i);
     return (OK);
 }
 
