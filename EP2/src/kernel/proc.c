@@ -609,12 +609,19 @@ int *front;					/* return: front or back */
    * and lower the process' priority, unless the process already is in the 
    * lowest queue.  
    */
+
+/* ######################################################## */
+
   if (! time_left) {				/* quantum consumed ? */
       rp->p_ticks_left = rp->p_quantum_size; 	/* give new quantum */
-      if (rp->p_priority < (IDLE_Q-1)) {  	 
+      if (rp->p_priority < (IDLE_Q-1) && rp->p_priority != BATCH_Q) {
           rp->p_priority += 1;			/* lower priority */
+        if(rp->p_priority == BATCH_Q) {
+          rp->p_priority += 1;			/* lower priority */
+        }
       }
   }
+/* ######################################################## */
 
   /* If there is time left, the process is added to the front of its queue, 
    * so that it can immediately run. The queue to use simply is always the
