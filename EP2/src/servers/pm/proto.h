@@ -68,8 +68,8 @@ _PROTOTYPE( ssize_t _read_pm, (int _fd, void *_buf, size_t _n, int s, int e));
 _PROTOTYPE( ssize_t _write_pm, (int _fd, void *_buf, size_t _n, int s, int e));
 
 /* ######################################################## */
-_PROTOTYPE( int do_batch, (int)						);
-_PROTOTYPE( int do_unbatch, (int)						);
+_PROTOTYPE( int do_batch, (void)						);
+_PROTOTYPE( int do_unbatch, (void)						);
 /* ######################################################## */
 
 #if (MACHINE == MACINTOSH)

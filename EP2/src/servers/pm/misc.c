@@ -429,14 +429,16 @@ int ep;
 
 
 /* ######################################################## */
-int do_batch(int proc)
+int do_batch()
 {
-  return sys_batch(proc);
+  int i = m_in.m1_i1;
+  return sys_batch(i);
 }
 
 
-int do_unbatch(int proc)
+int do_unbatch()
 {
-  return sys_batch(proc);
+  int i = m_in.m1_i1;
+  return sys_unbatch(i);
 }
 /* ######################################################## */
