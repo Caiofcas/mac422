@@ -642,27 +642,33 @@ PRIVATE void pick_proc()
  */
   register struct proc *rp;			/* process to run */
   int q;					/* iterate over queues */
-  char smaller_tick;
-
+  
   /* Check each of the scheduling queues for ready processes. The number of
    * queues is defined in proc.h, and priorities are set in the task table.
    * The lowest queue contains IDLE, which is always ready.
    */
+
+/* ######################################################## */
+  char smaller_tick;
+
   smaller_tick = 255;
 
+  /* Finds minimum amount of ticks in BATCH_Q*/
   rp = rdy_head[BATCH_Q];
   for(; (rp != NIL_PROC); ) {
       if (rp->p_ticks_left < smaller_tick)
-        smaller_tick = rp->p_ticks_left
+        smaller_tick = rp->p_ticks_left;
       rp = rp->p_nextready;
   }
 
   for (q=0; q < NR_SCHED_QUEUES; q++) {	
       if (q == BATCH_Q) {
         rp = rdy_head[q];
-        if (rp->p_ticks_left > smaller_tick) {
-            next_ptr = rp;
-        } else {
+
+        if (rp->p_ticks_left > smaller_tick) { /*If not min*/
+            next_ptr = rp; /*Keep process in front running*/
+        } else { /*If process with min ticks*/
+
           rp = rp->p_nextready;
           for (;rp;) {
             if (rp->p_ticks_left > smaller_tick) {
@@ -680,6 +686,9 @@ PRIVATE void pick_proc()
           return;				 
       }
   }
+
+/* ######################################################## */
+
 }
 
 /*===========================================================================*
@@ -701,7 +710,11 @@ timer_t *tp;					/* watchdog timer pointer */
   for (rp=BEG_PROC_ADDR; rp<END_PROC_ADDR; rp++) {
       if (! isemptyp(rp)) {				/* check slot use */
 	  lock(5,"balance_queues");
-	  if (rp->p_priority > rp->p_max_priority) {	/* update priority? */
+/* ######################################################## */
+
+	  if (rp->p_priority > rp->p_max_priority && 
+        rp->p_priority != BATCH_Q) {	/* update priority? */
+/* ######################################################## */
 	      if (rp->p_rts_flags == 0) dequeue(rp);	/* take off queue */
 	      ticks_added += rp->p_quantum_size;	/* do accounting */
 	      rp->p_priority -= 1;			/* raise priority */
