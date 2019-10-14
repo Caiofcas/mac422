@@ -4,9 +4,9 @@
 
 /*Arquivo feito para testar a mudança de prioridade dos processos */
 int main(){
+    int x;
     while(1){
-        sleep(20);
-        printf("Oi");
+        x = 1;
     }    
     return 0;
 }

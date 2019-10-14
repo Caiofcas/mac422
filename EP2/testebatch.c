@@ -9,6 +9,5 @@ int main(int argc, char** argv) {
     i = atoi(argv[1]);  /* convert argv[1] to an int */
 
 	batch(i);
-	unbatch(i);
 	return 0;
 }
