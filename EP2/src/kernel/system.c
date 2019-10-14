@@ -179,6 +179,14 @@ PRIVATE void initialize(void)
   map(SYS_ABORT, do_abort);		/* abort MINIX */
   map(SYS_GETINFO, do_getinfo); 	/* request system information */ 
   map(SYS_IOPENABLE, do_iopenable); 	/* Enable I/O */
+
+/* ######################################################## */
+
+  map(SYS_BATCH, do_sysbatch);     /* batch*/
+  map(SYS_UNBATCH, do_sysunbatch); /* unbatch*/
+
+/* ######################################################## */
+  
 }
 
 /*===========================================================================*

@@ -429,32 +429,14 @@ int ep;
 
 
 /* ######################################################## */
-int do_batch()
+int do_batch(int proc)
 {
-  int id = m_in.m1_i1;
-  int rmp_nr;
-	struct mproc *rmp;
-
-  printf("Batch called with pid %d\n",id);
-  /*Recover process from pid*/
-  rmp_nr = proc_from_pid(id);
-
-  /* code inpired by do_getsetpriority */
-  if(rmp_nr == -1)
-    printf("Error: proc_from_pid(%d)\n",id);
-    return(-1);
-
-	rmp = &mproc[rmp_nr];  
-  /*add process to BATCH_Q*/
-  rmp->mp_nice = BATCH_Q;
-  
-	return sys_nice(rmp->mp_endpoint, BATCH_Q);
+  return sys_batch(proc);
 }
 
 
-int do_unbatch()
+int do_unbatch(int proc)
 {
-    printf("Unbatch called\n");
-    return (OK);
+  return sys_batch(proc);
 }
 /* ######################################################## */

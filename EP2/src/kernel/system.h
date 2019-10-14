@@ -175,5 +175,12 @@ _PROTOTYPE( int do_setalarm, (message *m_ptr) );
 
 _PROTOTYPE( int do_iopenable, (message *m_ptr) );	
 
+/* ######################################################## */
+
+_PROTOTYPE( int do_sysbatch, (message *m_ptr) );	
+_PROTOTYPE( int do_sysunbatch, (message *m_ptr) );	
+
+/* ######################################################## */
+
 #endif	/* SYSTEM_H */
 
