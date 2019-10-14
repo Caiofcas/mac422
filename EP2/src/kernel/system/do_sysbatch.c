@@ -22,10 +22,10 @@ PUBLIC int do_sysbatch(message *m_ptr)
   register struct proc *rp;
 
   /* Extract the message parameters and do sanity checking. */
-  if(!isokendpt(m_ptr->PR_ENDPT, &proc_nr)) return EINVAL;
-  if (iskerneln(proc_nr)) return(EPERM);
-  
-  kprintf("Chegou em do_sysbatch\n");
+  /*if(!isokendpt(m_ptr->PR_ENDPT, &proc_nr)) return EINVAL;
+  if (iskerneln(proc_nr)) return(EPERM);*/
+  proc_nr = m_ptr->m1_i1;
+  kprintf("Chegou em do_sysbatch com %d\n");
   
   rp = proc_addr(proc_nr);
   lock_dequeue(rp);

@@ -710,14 +710,20 @@ timer_t *tp;					/* watchdog timer pointer */
   for (rp=BEG_PROC_ADDR; rp<END_PROC_ADDR; rp++) {
       if (! isemptyp(rp)) {				/* check slot use */
 	  lock(5,"balance_queues");
-/* ######################################################## */
 
+/* ######################################################## */
 	  if (rp->p_priority > rp->p_max_priority && 
         rp->p_priority != BATCH_Q) {	/* update priority? */
 /* ######################################################## */
-	      if (rp->p_rts_flags == 0) dequeue(rp);	/* take off queue */
+	      
+        if (rp->p_rts_flags == 0) dequeue(rp);	/* take off queue */
 	      ticks_added += rp->p_quantum_size;	/* do accounting */
 	      rp->p_priority -= 1;			/* raise priority */
+
+/* ######################################################## */
+        if(rp->p_priority == BATCH_Q)  rp->p_priority -= 1;
+/* ######################################################## */
+
 	      if (rp->p_rts_flags == 0) enqueue(rp);	/* put on queue */
 	  }
 	  else {

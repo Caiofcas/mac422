@@ -8,7 +8,7 @@
 PUBLIC int sys_batch(int proc)
 {
   message m;
-  printf("sys_batch called : %d\n",proc);
+ /* kprintf("sys_batch called : %d\n",proc);*/
   m.m1_i1 = proc;
   return(_taskcall(SYSTASK, SYS_BATCH, &m));
 }
