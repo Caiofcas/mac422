@@ -432,7 +432,7 @@ int ep;
 int do_batch()
 {
   int i = m_in.m1_i1;
-  printf("do_unbatch chamada com arg %d\n",i);
+  printf("do_batch chamada com arg %d\n",i);
   return sys_batch(i);
 }
 
