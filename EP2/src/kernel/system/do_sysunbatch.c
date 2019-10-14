@@ -27,6 +27,8 @@ PUBLIC int do_sysunbatch(message *m_ptr)
 
   rp = proc_addr(proc_nr);
 
+  kprintf("Chegou em do_sysunbatch\n");
+
   if(rp->p_priority == BATCH_Q){
     lock_dequeue(rp);
     rp->p_max_priority = rp->p_priority = BATCH_Q -1;
