@@ -431,14 +431,14 @@ int ep;
 /* ######################################################## */
 int do_batch()
 {
-    printf("Batch called\n");
-    return (OK);
+  int i = m_in.m1_i1;
+  return sys_batch(i);
 }
 
 
 int do_unbatch()
 {
-    printf("Unbatch called\n");
-    return (OK);
+  int i = m_in.m1_i1;
+  return sys_unbatch(i);
 }
 /* ######################################################## */
