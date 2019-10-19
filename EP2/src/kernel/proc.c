@@ -767,6 +767,9 @@ struct proc *rp;		/* this process is now runnable */
 {
 /* Safe gateway to enqueue() for tasks. */
   lock(3, "enqueue");
+/* ######################################################## */
+/*  if(rp->p_priority == BATCH_Q) kprintf("Enqueue ");*/
+/* ######################################################## */  
   enqueue(rp);
   unlock(3);
 }
@@ -785,6 +788,10 @@ struct proc *rp;		/* this process is no longer runnable */
 	dequeue(rp);
   } else {
 	lock(4, "dequeue");
+/* ######################################################## */  
+  /*if(rp->p_priority == BATCH_Q) kprintf("Dequeue ");*/
+/* ######################################################## */  
+
 	dequeue(rp);
 	unlock(4);
   }
