@@ -18,16 +18,13 @@
 PUBLIC int do_sysunbatch(message *m_ptr)
 {
 /* Remove process from BATCH_Q*/
-  int proc_nr;
+  int proc_n;
   register struct proc *rp;
 
-  /* Extract the message parameters and do sanity checking. */
-  if(!isokendpt(m_ptr->PR_ENDPT, &proc_nr)) return EINVAL;
-  if (iskerneln(proc_nr)) return(EPERM);
+  proc_n = m_ptr->m1_i1;  
+  if (iskerneln(proc_n)) return(EPERM);
 
-  rp = proc_addr(proc_nr);
-
-  kprintf("Chegou em do_sysunbatch\n");
+  rp = proc_addr(proc_n);
 
   if(rp->p_priority == BATCH_Q){
     lock_dequeue(rp);
@@ -35,7 +32,7 @@ PUBLIC int do_sysunbatch(message *m_ptr)
     if (! rp->p_rts_flags) lock_enqueue(rp);
     return(OK);
   }
-  /*Process was not in BATCH_Q*/
+
   return(EINVAL);
 }
 /* ######################################################## */
