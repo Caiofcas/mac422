@@ -435,10 +435,8 @@ int do_batch()
   int proc_pid;
   
   proc_pid = m_in.m1_i1;
-  printf("do_batch: chamada com arg %d\n",proc_pid);
-
   proc_n = proc_from_pid(proc_pid);
-  printf("do_batch: proc_n %d\n",proc_n);
+  
   return sys_batch(proc_n);
 }
 
