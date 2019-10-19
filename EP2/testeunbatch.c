@@ -7,8 +7,6 @@ int main(int argc, char** argv) {
         exit(1);    /* expecting at least 1 integer parameter to test program */
         
     i = atoi(argv[1]);  /* convert argv[1] to an int */
-	j = i;
-	batch(i);
-	unbatch(j);
+	unbatch(i);
 	return 0;
 }

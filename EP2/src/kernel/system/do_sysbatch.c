@@ -11,24 +11,22 @@
 #include <minix/type.h>
 #include <sys/resource.h>
 
-
 /*===========================================================================*
  *                                do_sysbatch                                *
  *===========================================================================*/
 PUBLIC int do_sysbatch(message *m_ptr)
 {
 /* Add process to BATCH_Q*/
-  int proc_nr;
+  int proc_n;
   register struct proc *rp;
-
-  /* Extract the message parameters and do sanity checking. */
-  if(!isokendpt(m_ptr->PR_ENDPT, &proc_nr)) return EINVAL;
-  if (iskerneln(proc_nr)) return(EPERM);
-
-  rp = proc_addr(proc_nr);
+  
+  proc_n = m_ptr->m1_i1;  
+  if (iskerneln(proc_n)) return(EPERM);
+  rp = proc_addr(proc_n);
+  
   lock_dequeue(rp);
-  rp->p_max_priority = rp->p_priority = BATCH_Q;
-  if (! rp->p_rts_flags) lock_enqueue(rp);
+  rp->p_priority = BATCH_Q;
+  if (! rp->p_rts_flags){   lock_enqueue(rp);} 
 
   return(OK);
 }

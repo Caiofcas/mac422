@@ -431,14 +431,20 @@ int ep;
 /* ######################################################## */
 int do_batch()
 {
-  int i = m_in.m1_i1;
-  return sys_batch(i);
+  int proc_n;
+  int proc_pid;
+  
+  proc_pid = m_in.m1_i1;
+  proc_n = proc_from_pid(proc_pid);
+  
+  return sys_batch(proc_n);
 }
 
 
 int do_unbatch()
 {
   int i = m_in.m1_i1;
+  printf("do_unbatch chamada com arg %d\n",i);
   return sys_unbatch(i);
 }
 /* ######################################################## */

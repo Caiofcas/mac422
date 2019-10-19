@@ -1,5 +1,6 @@
 #include <lib.h>
 #include <unistd.h>
+#include <stdio.h>
 
 PUBLIC int batch(int pid)
 {

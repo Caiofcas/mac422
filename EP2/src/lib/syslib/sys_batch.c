@@ -5,11 +5,10 @@
 /*===========================================================================*
  *                                sys_batch                                  *
  *===========================================================================*/
-PUBLIC int sys_batch(int proc)
+PUBLIC int sys_batch(int proc_n)
 {
   message m;
-  printf("sys_batch called : %d\n",proc);
-  m.m1_i1 = proc;
+  m.m1_i1 = proc_n;
   return(_taskcall(SYSTASK, SYS_BATCH, &m));
 }
 /* ######################################################## */
