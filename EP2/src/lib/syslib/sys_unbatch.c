@@ -5,12 +5,11 @@
 /*===========================================================================*
  *                                sys_unbatch                                *
  *===========================================================================*/
-PUBLIC int sys_unbatch(int proc)
+PUBLIC int sys_unbatch(int proc_nr)
 {
   message m;
-  /*kprintf("sys_unbatch called : %d\n",proc);*/
   
-  m.m1_i1 = proc;
+  m.m1_i1 = proc_nr;
   return(_taskcall(SYSTASK, SYS_UNBATCH, &m));
 }
 /* ######################################################## */
