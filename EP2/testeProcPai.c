@@ -21,16 +21,24 @@ pid_t efork(){
     return child_pid;
 }
 
-void testa_batch(pid_t alvo){
+void testa_chamadas(pid_t alvo, int opc){
     pid_t child_pid;
 
     child_pid = fork();
 
     if(child_pid == 0) { /*child*/
         printf("Processo nao pai chamou batch\nRetornou: %d\n",batch(alvo));
-        return;
+        if(opc){
+            sleep(6);
+            printf("Processo nao pai chamou unbatch\nRetornou: %d\n",unbatch(alvo)); 
+        }
+        exit(0);
     } else { /*parent*/
         printf("Processo pai chamou batch\nRetornou: %d\n",batch(alvo));
+        if(opc){
+            sleep(6);
+            printf("Processo pai chamou unbatch\nRetornou: %d\n",unbatch(alvo)); 
+        }
         return;
     }
 
@@ -38,14 +46,17 @@ void testa_batch(pid_t alvo){
 
 int main(int argc, char* argv[]){
     
+    int opc = 0;
     pid_t alvo_pid;
+
+    if(argc > 1) opc = atoi(argv[1]);
 
     alvo_pid = efork();
     
     if(alvo_pid == 0) { /*child*/
         exit(execve("alvo.out",NULL,NULL));
     } else { /*parent*/
-        testa_batch(alvo_pid);
+        testa_chamadas(alvo_pid,opc);
     }
 
     return 0;
