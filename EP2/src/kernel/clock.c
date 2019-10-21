@@ -211,13 +211,6 @@ irq_hook_t *hook;
       bill_ptr->p_ticks_left -= ticks;
   }
 
-  /* ######################################################## */
-    /*testing,can be deleted after*/
-    if(proc_ptr->p_priority == BATCH_Q) {
-        kprintf("(%d,%d)  ",proc_ptr->p_nr,proc_ptr->p_ticks_left);
-    }
-/* ######################################################## */
-
   /* Update load average. */
   load_update();
 
