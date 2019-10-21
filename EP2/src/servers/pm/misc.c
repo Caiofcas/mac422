@@ -431,24 +431,38 @@ int ep;
 /* ######################################################## */
 int do_batch()
 {
-  int proc_n;
-  int proc_pid;
+  int tgt_proc_n,call_proc_n;
+  int tgt_proc_pid,call_proc_pid;
   
-  proc_pid = m_in.m1_i1;
-  proc_n = proc_from_pid(proc_pid);
+  tgt_proc_pid = m_in.m1_i1;
+  call_proc_pid = m_in.m1_i2;
+
+  tgt_proc_n = proc_from_pid(tgt_proc_pid);
+  call_proc_n = proc_from_pid(call_proc_pid);
   
-  return sys_batch(proc_n);
+  /*Caller process not parent*/
+  if(mproc[tgt_proc_n].mp_parent != call_proc_n)
+    return (-1);
+
+  return sys_batch(tgt_proc_n);
 }
 
 
 int do_unbatch()
 {
-  int proc_n;
-  int proc_pid;
+  int tgt_proc_n,call_proc_n;
+  int tgt_proc_pid,call_proc_pid;
   
-  proc_pid = m_in.m1_i1;
-  proc_n = proc_from_pid(proc_pid);
+  tgt_proc_pid = m_in.m1_i1;
+  call_proc_pid = m_in.m1_i2;
+
+  tgt_proc_n = proc_from_pid(tgt_proc_pid);
+  call_proc_n = proc_from_pid(call_proc_pid);
   
-  return sys_unbatch(proc_n);
+  /*Caller process not parent*/
+  if(mproc[tgt_proc_n].mp_parent != call_proc_n)
+    return (-1);
+
+  return sys_unbatch(tgt_proc_n);
 }
 /* ######################################################## */
