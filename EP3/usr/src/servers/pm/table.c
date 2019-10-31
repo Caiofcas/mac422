@@ -1,123 +1,119 @@
-/* Function prototypes. */
+/* This file contains the table used to map system call numbers onto the
+ * routines that perform them.
+ */
 
-struct mproc;
-struct stat;
-struct mem_map;
-struct memory;
+#define _TABLE
 
-#include <timers.h>
+#include "pm.h"
+#include <minix/callnr.h>
+#include <signal.h>
+#include "mproc.h"
+#include "param.h"
 
-/* alloc.c */
-_PROTOTYPE( phys_clicks alloc_mem, (phys_clicks clicks)			);
-_PROTOTYPE( void free_mem, (phys_clicks base, phys_clicks clicks)	);
-_PROTOTYPE( void mem_init, (struct memory *chunks, phys_clicks *free)	);
-#if ENABLE_SWAP
-_PROTOTYPE( int swap_on, (char *file, u32_t offset, u32_t size)	);
-_PROTOTYPE( int swap_off, (void)					);
-_PROTOTYPE( void swap_in, (void)					);
-_PROTOTYPE( void swap_inqueue, (struct mproc *rmp)			);
-#else /* !SWAP */
-#define swap_in()			((void)0)
-#define swap_inqueue(rmp)		((void)0)
-#endif /* !SWAP */
-_PROTOTYPE(int mem_holes_copy, (struct hole *, size_t *, u32_t *)	);
+/* Miscellaneous */
+char core_name[] = "core";	/* file name where core images are produced */
 
-/* break.c */
-_PROTOTYPE( int adjust, (struct mproc *rmp,
-			vir_clicks data_clicks, vir_bytes sp)		);
-_PROTOTYPE( int do_brk, (void)						);
-_PROTOTYPE( int size_ok, (int file_type, vir_clicks tc, vir_clicks dc,
-			vir_clicks sc, vir_clicks dvir, vir_clicks s_vir) );
-
-/* devio.c */
-_PROTOTYPE( int do_dev_io, (void) );
-_PROTOTYPE( int do_dev_io, (void) );
-
-/* dmp.c */
-_PROTOTYPE( int do_fkey_pressed, (void)						);
-
-/* exec.c */
-_PROTOTYPE( int do_exec, (void)						);
-_PROTOTYPE( void rw_seg, (int rw, int fd, int proc, int seg,
-						phys_bytes seg_bytes)	);
-_PROTOTYPE( struct mproc *find_share, (struct mproc *mp_ign, Ino_t ino,
-			Dev_t dev, time_t ctime)			);
-
-/* forkexit.c */
-_PROTOTYPE( int do_fork, (void)						);
-_PROTOTYPE( int do_pm_exit, (void)					);
-_PROTOTYPE( int do_waitpid, (void)					);
-_PROTOTYPE( void pm_exit, (struct mproc *rmp, int exit_status)		);
-
-/* getset.c */
-_PROTOTYPE( int do_getset, (void)					);
-
-/* main.c */
-_PROTOTYPE( int main, (void)						);
-
-/* misc.c */
-_PROTOTYPE( int do_reboot, (void)					);
-_PROTOTYPE( int do_procstat, (void)					);
-_PROTOTYPE( int do_getsysinfo, (void)					);
-_PROTOTYPE( int do_getprocnr, (void)					);
-_PROTOTYPE( int do_svrctl, (void)					);
-_PROTOTYPE( int do_allocmem, (void)					);
-_PROTOTYPE( int do_freemem, (void)					);
-_PROTOTYPE( int do_getsetpriority, (void)					);
-_PROTOTYPE( ssize_t _read_pm, (int _fd, void *_buf, size_t _n, int s, int e));
-_PROTOTYPE( ssize_t _write_pm, (int _fd, void *_buf, size_t _n, int s, int e));
+_PROTOTYPE (int (*call_vec[NCALLS]), (void) ) = {
+	no_sys,		/*  0 = unused	*/
+	do_pm_exit,	/*  1 = exit	*/
+	do_fork,	/*  2 = fork	*/
+	no_sys,		/*  3 = read	*/
+	no_sys,		/*  4 = write	*/
+	no_sys,		/*  5 = open	*/
+	no_sys,		/*  6 = close	*/
+	do_waitpid,	/*  7 = wait	*/
+	no_sys,		/*  8 = creat	*/
+	no_sys,		/*  9 = link	*/
+	no_sys,		/* 10 = unlink	*/
+	do_waitpid,	/* 11 = waitpid	*/
+	no_sys,		/* 12 = chdir	*/
+	do_time,	/* 13 = time	*/
+	no_sys,		/* 14 = mknod	*/
+	no_sys,		/* 15 = chmod	*/
+	no_sys,		/* 16 = chown	*/
+	do_brk,		/* 17 = break	*/
+	no_sys,		/* 18 = stat	*/
+	no_sys,		/* 19 = lseek	*/
+	do_getset,	/* 20 = getpid	*/
+	no_sys,		/* 21 = mount	*/
+	no_sys,		/* 22 = umount	*/
+	do_getset,	/* 23 = setuid	*/
+	do_getset,	/* 24 = getuid	*/
+	do_stime,	/* 25 = stime	*/
+	do_trace,	/* 26 = ptrace	*/
+	do_alarm,	/* 27 = alarm	*/
+	no_sys,		/* 28 = fstat	*/
+	do_pause,	/* 29 = pause	*/
+	no_sys,		/* 30 = utime	*/
+	no_sys,		/* 31 = (stty)	*/
+	no_sys,		/* 32 = (gtty)	*/
+	no_sys,		/* 33 = access	*/
+	no_sys,		/* 34 = (nice)	*/
+	no_sys,		/* 35 = (ftime)	*/
+	no_sys,		/* 36 = sync	*/
+	do_kill,	/* 37 = kill	*/
+	no_sys,		/* 38 = rename	*/
+	no_sys,		/* 39 = mkdir	*/
+	no_sys,		/* 40 = rmdir	*/
+	no_sys,		/* 41 = dup	*/
+	no_sys,		/* 42 = pipe	*/
+	do_times,	/* 43 = times	*/
+	no_sys,		/* 44 = (prof)	*/
+	no_sys,		/* 45 = unused	*/
+	do_getset,	/* 46 = setgid	*/
+	do_getset,	/* 47 = getgid	*/
+	no_sys,		/* 48 = (signal)*/
+	no_sys,		/* 49 = unused	*/
+	no_sys,		/* 50 = unused	*/
+	no_sys,		/* 51 = (acct)	*/
+	no_sys,		/* 52 = (phys)	*/
+	no_sys,		/* 53 = (lock)	*/
+	no_sys,		/* 54 = ioctl	*/
+	no_sys,		/* 55 = fcntl	*/
+	no_sys,		/* 56 = (mpx)	*/
 
 /* ######################################################## */
-_PROTOTYPE( int do_batch, (void)						);
-_PROTOTYPE( int do_unbatch, (void)						);
+	do_batch,		/* 57 = batch	*/
+	do_unbatch,		/* 58 = unbatch	*/
 /* ######################################################## */
+	
+	do_exec,	/* 59 = execve	*/
+	no_sys,		/* 60 = umask	*/
+	no_sys,		/* 61 = chroot	*/
+	do_getset,	/* 62 = setsid	*/
+	do_getset,	/* 63 = getpgrp	*/
 
-#if (MACHINE == MACINTOSH)
-_PROTOTYPE( phys_clicks start_click, (void)				);
-#endif
-
-_PROTOTYPE( void setreply, (int proc_nr, int result)			);
-
-/* signal.c */
-_PROTOTYPE( int do_alarm, (void)					);
-_PROTOTYPE( int do_kill, (void)						);
-_PROTOTYPE( int ksig_pending, (void)					);
-_PROTOTYPE( int do_pause, (void)					);
-_PROTOTYPE( int set_alarm, (int proc_nr, int sec)			);
-_PROTOTYPE( int check_sig, (pid_t proc_id, int signo)			);
-_PROTOTYPE( void sig_proc, (struct mproc *rmp, int sig_nr)		);
-_PROTOTYPE( int do_sigaction, (void)					);
-_PROTOTYPE( int do_sigpending, (void)					);
-_PROTOTYPE( int do_sigprocmask, (void)					);
-_PROTOTYPE( int do_sigreturn, (void)					);
-_PROTOTYPE( int do_sigsuspend, (void)					);
-_PROTOTYPE( void check_pending, (struct mproc *rmp)			);
-
-/* time.c */
-_PROTOTYPE( int do_stime, (void)					);
-_PROTOTYPE( int do_time, (void)						);
-_PROTOTYPE( int do_times, (void)					);
-_PROTOTYPE( int do_gettimeofday, (void)					);
-
-/* timers.c */
-_PROTOTYPE( void pm_set_timer, (timer_t *tp, int delta, 
-	tmr_func_t watchdog, int arg));
-_PROTOTYPE( void pm_expire_timers, (clock_t now));
-_PROTOTYPE( void pm_cancel_timer, (timer_t *tp));
-
-/* trace.c */
-_PROTOTYPE( int do_trace, (void)					);
-_PROTOTYPE( void stop_proc, (struct mproc *rmp, int sig_nr)		);
-
-/* utility.c */
-_PROTOTYPE( pid_t get_free_pid, (void)					);
-_PROTOTYPE( int allowed, (char *name_buf, struct stat *s_buf, int mask)	);
-_PROTOTYPE( int no_sys, (void)						);
-_PROTOTYPE( void panic, (char *who, char *mess, int num)		);
-_PROTOTYPE( void tell_fs, (int what, int p1, int p2, int p3)		);
-_PROTOTYPE( int get_stack_ptr, (int proc_nr, vir_bytes *sp)		);
-_PROTOTYPE( int get_mem_map, (int proc_nr, struct mem_map *mem_map)	);
-_PROTOTYPE( char *find_param, (const char *key));
-_PROTOTYPE( int proc_from_pid, (pid_t p));
-_PROTOTYPE( int pm_isokendpt, (int ep, int *proc));
-
+	no_sys,		/* 64 = unused */
+	no_sys,		/* 65 = UNPAUSE	*/
+	no_sys, 	/* 66 = unused  */
+	no_sys,		/* 67 = REVIVE	*/
+	no_sys,		/* 68 = TASK_REPLY  */
+	no_sys,		/* 69 = unused	*/
+	no_sys,		/* 70 = unused	*/
+	do_sigaction,	/* 71 = sigaction   */
+	do_sigsuspend,	/* 72 = sigsuspend  */
+	do_sigpending,	/* 73 = sigpending  */
+	do_sigprocmask,	/* 74 = sigprocmask */
+	do_sigreturn,	/* 75 = sigreturn   */
+	do_reboot,	/* 76 = reboot	*/
+	do_svrctl,	/* 77 = svrctl	*/
+	do_procstat,	/* 78 = procstat */
+	do_getsysinfo,	/* 79 = getsysinfo */
+	do_getprocnr,	/* 80 = getprocnr */
+	no_sys, 	/* 81 = unused */
+	no_sys, 	/* 82 = fstatfs */
+	do_allocmem, 	/* 83 = memalloc */
+	do_freemem, 	/* 84 = memfree */
+	no_sys,		/* 85 = select */
+	no_sys,		/* 86 = fchdir */
+	no_sys,		/* 87 = fsync */
+	do_getsetpriority,	/* 88 = getpriority */
+	do_getsetpriority,	/* 89 = setpriority */
+	do_time,	/* 90 = gettimeofday */
+	do_getset,	/* 91 = seteuid	*/
+	do_getset,	/* 92 = setegid	*/
+	no_sys,		/* 93 = truncate */
+	no_sys,		/* 94 = ftruncate */
+};
+/* This should not fail with "array size is negative": */
+extern int dummy[sizeof(call_vec) == NCALLS * sizeof(call_vec[0]) ? 1 : -1];
