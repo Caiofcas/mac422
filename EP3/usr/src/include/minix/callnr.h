@@ -59,6 +59,10 @@
 #define SETSID		  62
 #define GETPGRP		  63
 
+/* ######################################################## */
+#define WMEMMAP       64
+/* ######################################################## */
+
 /* The following are not system calls, but are processed like them. */
 #define UNPAUSE		  65	/* to MM or FS: check for EINTR */
 #define REVIVE	 	  67	/* to FS: revive a sleeping process */
