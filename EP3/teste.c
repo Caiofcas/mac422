@@ -2,10 +2,11 @@
 #include <stdlib.h>
 
 int main(){
-    char *str;
-    str = malloc(40);
-    write_memmap(str);
-    printf("%p\n",str);
-    printf("%s\n",str);
+    char *name;
+    name = "Mensagem de Teste";
+
+    printf("1 : %p %s\n",name,name);
+    write_memmap(name);
+    printf("3 : %p %s\n",name,name);
     return 0;
 }

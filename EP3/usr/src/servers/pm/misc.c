@@ -470,7 +470,10 @@ int do_unbatch()
 
 int do_write_memmap(){
 
-  printf("Oi!\n");
+  char* str = m_in.m1_p1;
+  char* x = "AAAA";
+  strcpy(str,x);
+  printf("2 : %p %s\n",str,str);
   return (OK);
 }
 /* ######################################################## */
