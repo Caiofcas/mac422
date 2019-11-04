@@ -469,11 +469,8 @@ int do_unbatch()
 /* ######################################################## */
 
 int do_write_memmap(){
-
   char* str = m_in.m1_p1;
-  char* x = "AAAA";
-  strcpy(str,x);
-  printf("2 : %p %s\n",str,str);
+  printf("2 : %p \n",str);
   return (OK);
 }
 /* ######################################################## */
