@@ -25,9 +25,8 @@
 #include <minix/const.h>
 
 
-#include "../../servers/pm/mproc.h"
-#include "../../kernel/const.h"
-#include "../../kernel/proc.h"
+#include "/usr/src/servers/pm/mproc.h"
+#include "/usr/src/kernel/proc.h"
 
 /* Funcao que recebe um numero de linhas maximo no qual podem ser
    impressos processos e  imprime:
