@@ -8,12 +8,10 @@
 #include <termcap.h>
 #include <termios.h>
 #include <time.h>
-#include <string.h>
 #include <signal.h>
 #include <fcntl.h>
 #include <errno.h>
 
-#include <sys/ioc_tty.h>
 #include <sys/times.h>
 #include <sys/types.h>
 #include <sys/time.h>
@@ -23,7 +21,6 @@
 #include <minix/config.h>
 #include <minix/type.h>
 #include <minix/const.h>
-
 
 #include "/usr/src/servers/pm/mproc.h"
 #include "/usr/src/kernel/proc.h"
