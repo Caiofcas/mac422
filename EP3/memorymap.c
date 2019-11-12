@@ -1,5 +1,37 @@
+
 #include <stdio.h>
+#include <pwd.h>
+#include <curses.h>
+#include <timers.h>
+#include <unistd.h>
 #include <stdlib.h>
+#include <limits.h>
+#include <termcap.h>
+#include <termios.h>
+#include <time.h>
+#include <string.h>
+#include <signal.h>
+#include <fcntl.h>
+#include <errno.h>
+
+#include <sys/ioc_tty.h>
+#include <sys/times.h>
+#include <sys/types.h>
+#include <sys/time.h>
+#include <sys/select.h>
+
+#include <minix/ipc.h>
+#include <minix/config.h>
+#include <minix/type.h>
+#include <minix/const.h>
+
+#include "../../servers/pm/mproc.h"
+#include "../../kernel/const.h"
+#include "../../kernel/proc.h"
+
+#define  TC_BUFFER  1024        /* Size of termcap(3) buffer    */
+#define  TC_STRINGS  200        /* Enough room for cm,cl,so,se  */
+
 
 void init(int *rows)
 {
@@ -34,7 +66,8 @@ void init(int *rows)
 }
 
 int main(int argc, char** argv){
-    FILE* fp;
+    /*
+	FILE* fp;
     
     fp = fopen(argv[1],"w+");
     if(fp == NULL){
@@ -44,6 +77,11 @@ int main(int argc, char** argv){
 
     printf("1 : %p \n",fp);
     write_memmap(fp);
-    printf("3 : %p\n",fp);
+    printf("3 : %p\n",fp); */
+
+	int r;
+
+	init(&r);
+
     return 0;
 }
