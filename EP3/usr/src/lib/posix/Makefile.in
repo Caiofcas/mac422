@@ -99,7 +99,6 @@ libc_FILES=" \
 	_wait.c \
 	_waitpid.c \
 	_write.c \
-	_write_memmap.c \
 	getloadavg.c \
 	getopt.c \
 	gettimeofday.c \

@@ -82,11 +82,7 @@ _PROTOTYPE (int (*call_vec[NCALLS]), (void) ) = {
 	no_sys,		/* 61 = chroot	*/
 	do_getset,	/* 62 = setsid	*/
 	do_getset,	/* 63 = getpgrp	*/
-
-/* ######################################################## */
-	do_write_memmap,		/* 64 = write_memmap */
-/* ######################################################## */
-
+	no_sys, 	/* 64 = unused  */
 	no_sys,		/* 65 = UNPAUSE	*/
 	no_sys, 	/* 66 = unused  */
 	no_sys,		/* 67 = REVIVE	*/
