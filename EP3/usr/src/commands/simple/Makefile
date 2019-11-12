@@ -120,7 +120,6 @@ ALL	= \
 	mail \
 	man \
 	mesg \
-	memorymap \
 	mkdir \
 	mkfifo \
 	mkfs \
@@ -532,9 +531,6 @@ mail:	mail.c
 man:	man.c
 	$(CCLD) -o $@ $?
 	@install -S 10kw $@
-
-memorymap:	memorymap.c
-	$(CCLD) -o $@ $? -lcurses
 
 mesg:	mesg.c
 	$(CCLD) -o $@ $?
