@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <pwd.h>
 #include <curses.h>
@@ -39,7 +38,6 @@ char *Tclr_all;
    e retorna esse valor em ROWS */
 void init(int *rows)
 {
-	
 	char  *term;
 	static char   buffer[TC_BUFFER], strings[TC_STRINGS];
 	char *s = strings, *v;
@@ -79,12 +77,13 @@ void init(int *rows)
    impressos processos e  imprime:
 		PID POS_INICIAL POS_FINAL
    para quantos processos forem possiveis.*/
-void showmap(int r)
+void showmap(int max_lines)
 {
 	struct winsize winsize;
 	static struct mproc mproc[NR_PROCS];
 	struct mproc pr;
 	int p, lines = 1;
+	int pid,start,end,i;
 
 	if(ioctl(STDIN_FILENO, TIOCGWINSZ, &winsize) != 0) {
 		perror("TIOCGWINSZ");
@@ -92,6 +91,7 @@ void showmap(int r)
 		exit(1);
 	}
 
+	/*Obtem a tabela de processos*/
 	if(getsysinfo(PM_PROC_NR, SI_PROC_TAB, mproc) < 0) {
 		fprintf(stderr, "getsysinfo() for SI_PROC_TAB failed.\n");
 		exit(1);
@@ -99,26 +99,33 @@ void showmap(int r)
 
 	printf("%s", Tclr_all);
 
-	if(winsize.ws_row > 0) r = winsize.ws_row;
+	if(winsize.ws_row > 0) max_lines = winsize.ws_row;
 
 	/*Percorre a tabela de processos e imprime as informacoes para
 	cada processo ate o fim da tabela ou acabar o numero de linhas.*/
 
 	printf("PID\tSTART\tEND\n");
-	for( p = 0; p < NR_PROCS && lines < r; p++){
+	for( p = 0; p < NR_PROCS; p++){
 		pr = mproc[p];
-		printf("%d\t",pr.mp_pid);
+
+		/*Verifica se o processo esta sendo usado*/
+		if(!(pr.mp_flags & IN_USE)) continue;
+		
+		/*Recupera informacoes*/
+		pid = pr.mp_pid;
+		end = start = pr.mp_seg[0].mem_phys;
+		for(i =0;i<3;i++) end+= pr.mp_seg[i].mem_len;
+		
+		printf("%d\t%d\t%d\n",pid,start,end);
 	}
 }
 
 
 int main(int argc, char** argv){
     
-	int r;
+	int n_lines;
 
-	init(&r);
-
-	showmap(r);
-
+	init(&n_lines);
+	showmap(n_lines);
     return 0;
 }
