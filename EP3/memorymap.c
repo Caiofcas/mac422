@@ -25,6 +25,7 @@
 #include <minix/type.h>
 #include <minix/const.h>
 
+
 #include "../../servers/pm/mproc.h"
 #include "../../kernel/const.h"
 #include "../../kernel/proc.h"
@@ -32,15 +33,20 @@
 #define  TC_BUFFER  1024        /* Size of termcap(3) buffer    */
 #define  TC_STRINGS  200        /* Enough room for cm,cl,so,se  */
 
+char *Tclr_all;
 
+/* Funcao que determina quantas linhas podem ser impressas
+   e retorna esse valor em ROWS */
 void init(int *rows)
 {
+	
 	char  *term;
 	static char   buffer[TC_BUFFER], strings[TC_STRINGS];
 	char *s = strings, *v;
 
 	*rows = 0;
 
+	/* Checagem de erros*/
 	if(!(term = getenv("TERM"))) {
 		fprintf(stderr, "No TERM set\n");
 		exit(1);
@@ -54,9 +60,13 @@ void init(int *rows)
 	if ( (Tclr_all = tgetstr( "cl", &s )) == NULL )
 		Tclr_all = "\f";
 
+	/*Daqui obtemos o numero de linhas*/
 	if((v = tgetstr ("li", &s)) != NULL)
 		sscanf(v, "%d", rows);
+
+	/*Define o valor padrao como 24 linhas*/
 	if(*rows < 1) *rows = 24;
+	
 	if(!initscr()) {
 		fprintf(stderr, "initscr() failed\n");
 		exit(1);
@@ -65,23 +75,50 @@ void init(int *rows)
 	nl();
 }
 
+/* Funcao que recebe um numero de linhas maximo no qual podem ser
+   impressos processos e  imprime:
+		PID POS_INICIAL POS_FINAL
+   para quantos processos forem possiveis.*/
+void showmap(int r)
+{
+	struct winsize winsize;
+	static struct mproc mproc[NR_PROCS];
+	struct mproc pr;
+	int p, lines = 1;
+
+	if(ioctl(STDIN_FILENO, TIOCGWINSZ, &winsize) != 0) {
+		perror("TIOCGWINSZ");
+		fprintf(stderr, "TIOCGWINSZ failed\n");
+		exit(1);
+	}
+
+	if(getsysinfo(PM_PROC_NR, SI_PROC_TAB, mproc) < 0) {
+		fprintf(stderr, "getsysinfo() for SI_PROC_TAB failed.\n");
+		exit(1);
+	}
+
+	printf("%s", Tclr_all);
+
+	if(winsize.ws_row > 0) r = winsize.ws_row;
+
+	/*Percorre a tabela de processos e imprime as informacoes para
+	cada processo ate o fim da tabela ou acabar o numero de linhas.*/
+
+	printf("PID\tSTART\tEND\n");
+	for( p = 0; p < NR_PROCS && lines < r; p++){
+		pr = mproc[p];
+		printf("%d\t",pr.mp_pid);
+	}
+}
+
+
 int main(int argc, char** argv){
-    /*
-	FILE* fp;
     
-    fp = fopen(argv[1],"w+");
-    if(fp == NULL){
-        printf("Arquivo não foi aberto\n");
-        return 1;
-    }
-
-    printf("1 : %p \n",fp);
-    write_memmap(fp);
-    printf("3 : %p\n",fp); */
-
 	int r;
 
 	init(&r);
+
+	showmap(r);
 
     return 0;
 }
