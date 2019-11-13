@@ -427,6 +427,12 @@ int ep;
   return(_syscall(FS_PROC_NR, WRITE, &m));
 }
 
+/**/
+int do_memalloc(int type) 
+{
+  if (type == FIRST_FIT) 
+}
+/**/
 
 /* ######################################################## */
 int do_batch()
