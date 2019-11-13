@@ -71,30 +71,60 @@ phys_clicks clicks;		/* amount of memory requested */
   phys_clicks old_base;
 
   do {
-        prev_ptr = NIL_HOLE;
-	      hp = hole_head;
-	      while (hp != NIL_HOLE && hp->h_base < swap_base) {
-		      if (hp->h_len >= clicks) {
-			      /* We found a hole that is big enough.  Use it. */
-			      old_base = hp->h_base;	/* remember where it started */
-			      hp->h_base += clicks;	/* bite a piece off */
-			      hp->h_len -= clicks;	/* ditto */
+    if (FIRST_FIT_FLAG) {
+      prev_ptr = NIL_HOLE;
+      hp = hole_head;
+      while (hp != NIL_HOLE && hp->h_base < swap_base) {
+        if (hp->h_len >= clicks) {
+          /* We found a hole that is big enough.  Use it. */
+          old_base = hp->h_base;	/* remember where it started */
+          hp->h_base += clicks;	/* bite a piece off */
+          hp->h_len -= clicks;	/* ditto */
 
-			      /* Remember new high watermark of used memory. */
-			      if(hp->h_base > high_watermark)
-			      	high_watermark = hp->h_base;
+          /* Remember new high watermark of used memory. */
+          if(hp->h_base > high_watermark)
+            high_watermark = hp->h_base;
 
-			      /* Delete the hole if used up completely. */
-			      if (hp->h_len == 0) del_slot(prev_ptr, hp);
+          /* Delete the hole if used up completely. */
+          if (hp->h_len == 0) del_slot(prev_ptr, hp);
 
-			      /* Return the start address of the acquired block. */
-			      return(old_base);
-		      }
-		      prev_ptr = hp;
-		      hp = hp->h_next;
-	      }
+          /* Return the start address of the acquired block. */
+          return(old_base);
+        }
+        prev_ptr = hp;
+        hp = hp->h_next;
+      }
+    } else {
+      hp = max_hole();
+      old_base = hp->h_base;	/* remember where it started */
+      hp->h_base += clicks;	/* bite a piece off */
+      hp->h_len -= clicks;	/* ditto */
+      /* Remember new high watermark of used memory. */
+      if(hp->h_base > high_watermark)
+        high_watermark = hp->h_base;
+        
+      /* Delete the hole if used up completely. */
+      if (hp->h_len == 0) del_slot(prev_ptr, hp);
+      /* Return the start address of the acquired block. */
+      return(old_base);
+    }
   } while (swap_out());		/* try to swap some other process out */
   return(NO_MEM);
+}
+
+PUBLIC hole max_hole()
+{
+  /* Scan the hole list and return the largest hole. */
+  register struct hole *hp;
+  register phys_clicks max;
+
+  hp = hole_head;
+  max = 0;
+  while (hp != NIL_HOLE) {
+    if (hp->h_len > max) max = hp->h_len;
+    hp = hp->h_next;
+  }
+  return(hp);
 }
 
 /*===========================================================================*
@@ -124,18 +154,18 @@ phys_clicks clicks;		/* number of clicks to free */
    * front of the hole list.
    */
   if (hp == NIL_HOLE || base <= hp->h_base) {
-	/* Block to be freed goes on front of the hole list. */
-	new_ptr->h_next = hp;
-	hole_head = new_ptr;
-	merge(new_ptr);
-	return;
+    /* Block to be freed goes on front of the hole list. */
+    new_ptr->h_next = hp;
+    hole_head = new_ptr;
+    merge(new_ptr);
+    return;
   }
 
   /* Block to be returned does not go on front of hole list. */
   prev_ptr = NIL_HOLE;
   while (hp != NIL_HOLE && base > hp->h_base) {
-	prev_ptr = hp;
-	hp = hp->h_next;
+    prev_ptr = hp;
+    hp = hp->h_next;
   }
 
   /* We found where it goes.  Insert block after 'prev_ptr'. */
@@ -250,21 +280,6 @@ phys_clicks *free;		/* memory size summaries */
   swap_base++;				/* make separate */
   swap_maxsize = 0 - swap_base;		/* maximum we can possibly use */
 #endif
-}
-
-PUBLIC phys_clicks max_hole()
-{
-  /* Scan the hole list and return the largest hole. */
-  register struct hole *hp;
-  register phys_clicks max;
-
-  hp = hole_head;
-  max = 0;
-  while (hp != NIL_HOLE) {
-    if (hp->h_len > max) max = hp->h_len;
-      hp = hp->h_next;
-    }
-  return(max);
 }
 
 /*===========================================================================*
