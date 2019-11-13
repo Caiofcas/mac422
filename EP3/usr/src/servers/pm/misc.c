@@ -12,6 +12,7 @@
  */
 
 #include "pm.h"
+#include "alloc.h"
 #include <minix/callnr.h>
 #include <signal.h>
 #include <sys/svrctl.h>
@@ -427,12 +428,18 @@ int ep;
   return(_syscall(FS_PROC_NR, WRITE, &m));
 }
 
-/**/
-int do_memalloc(int type) 
+/*###############################*/
+int do_memalloc(int type, int clicks) 
 {
-  if (type == FIRST_FIT) 
+  if (type == FIRST_FIT) {
+    alloc_mem(clicks);
+  } else {
+    alloc_mem_worst_fit(clicks);
+  }
+
+  return 0;
 }
-/**/
+/*###############################*/
 
 /* ######################################################## */
 int do_batch()
