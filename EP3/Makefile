@@ -1,2 +1,5 @@
+CC = cc
+CFLAGS = -w -lcurses -D_MINIX -D_POSIX_SOURCE
+
 memorymap: memorymap.c
-	cc memorymap.c -o memorymap -w -lcurses -D_MINIX -D_POSIX_SOURCE
+	$(CC) memorymap.c -o memorymap $(CFLAGS)
