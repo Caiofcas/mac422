@@ -101,10 +101,16 @@ PUBLIC phys_clicks alloc_mem_worst_fit(clicks)
 phys_clicks clicks;		/* amount of memory requested */
 {
   register struct hole *hp, *prev_ptr;
+  register phys_clicks max;
   phys_clicks old_base;
 
   do {
-    hp = max_hole();
+    hp = hole_head;
+    max = 0;
+    while (hp != NIL_HOLE) {
+      if (hp->h_len > max) max = hp->h_len;
+      hp = hp->h_next;
+    }
     old_base = hp->h_base;	/* remember where it started */
     hp->h_base += clicks;	/* bite a piece off */
     hp->h_len -= clicks;	/* ditto */
@@ -118,20 +124,6 @@ phys_clicks clicks;		/* amount of memory requested */
     return(old_base);
   } while(swap_out());
   return(NO_MEM);
-
-PUBLIC struct hole max_hole()
-{
-  /* Scan the hole list and return the largest hole. */
-  register struct hole *hp;
-  register phys_clicks max;
-
-  hp = hole_head;
-  max = 0;
-  while (hp != NIL_HOLE) {
-    if (hp->h_len > max) max = hp->h_len;
-    hp = hp->h_next;
-  }
-  return(hp);
 }
 
 /*===========================================================================*
