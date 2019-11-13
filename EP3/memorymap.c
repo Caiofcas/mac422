@@ -30,17 +30,9 @@
 		PID POS_INICIAL POS_FINAL
    para quantos processos forem possiveis.*/
 
-
-int main(int argc, char** argv){
-    static struct mproc mproc[NR_PROCS];
+void print_procs( struct mproc* mproc){
 	struct mproc pr;
 	int pid,start,end,i,p;
-
-	/*Obtem a tabela de processos*/
-	if(getsysinfo(PM_PROC_NR, SI_PROC_TAB, mproc) < 0) {
-		fprintf(stderr, "getsysinfo() for SI_PROC_TAB failed.\n");
-		exit(1);
-	}
 
 	printf("PID\tSTART\tEND\n");
 
@@ -54,11 +46,44 @@ int main(int argc, char** argv){
 		
 		/*Recupera informacoes*/
 		pid = pr.mp_pid;
-		end = start = pr.mp_seg[0].mem_phys;
-		for(i =0;i<3;i++) end+= pr.mp_seg[i].mem_len;
+		start = pr.mp_seg[0].mem_phys;
+		end = pr.mp_seg[3].mem_phys + pr.mp_seg[3].mem_len;
 		
 		printf("%d\t%d\t%d\n",pid,start,end);
 	}
+}
 
+void print_memory(struct pm_mem_info *pmi){
+	int h;
+	int total_bytes = 0; 
+	for(h = 0; h < _NR_HOLES; h++) {
+		if(pmi->pmi_holes[h].h_base && pmi->pmi_holes[h].h_len) {
+			int bytes;
+			bytes = pmi->pmi_holes[h].h_len << CLICK_SHIFT;
+			total_bytes += bytes;
+		}
+	}
+
+	printf("Mem: %dK Free\n",total_bytes/1024);
+}
+
+
+int main(int argc, char** argv){
+    static struct mproc mproc[NR_PROCS];
+	static struct pm_mem_info pmi;
+
+	int used_memory = 0;
+
+	/*Obtem a tabela de processos*/
+	if(getsysinfo(PM_PROC_NR, SI_PROC_TAB, mproc) < 0) {
+		fprintf(stderr, "getsysinfo() for SI_PROC_TAB failed.\n");
+		exit(1);
+	}
+	if(getsysinfo(PM_PROC_NR, SI_MEM_ALLOC, &pmi) < 0) {
+		fprintf(stderr, "getsysinfo() for SI_MEM_ALLOC failed.\n");
+		exit(1);;
+	}
+	print_procs(mproc);
+	print_memory(&pmi);
 	return 0;
 }
