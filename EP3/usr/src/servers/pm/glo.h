@@ -10,6 +10,10 @@ EXTERN int procs_in_use;	/* how many processes are marked as IN_USE */
 EXTERN char monitor_params[128*sizeof(char *)];	/* boot monitor parameters */
 EXTERN struct kinfo kinfo;	/* kernel information */
 
+/* EP3 ######################################################## */
+EXTERN unsigned short ALLOC_POL;
+/* EP3 ######################################################## */
+
 /* The parameters of the call are kept here. */
 EXTERN message m_in;		/* the incoming message itself is kept here. */
 EXTERN int who_p, who_e;	/* caller's proc number, endpoint */

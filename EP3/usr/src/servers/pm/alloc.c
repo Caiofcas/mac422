@@ -29,6 +29,10 @@
 #include "../../kernel/config.h"
 #include "../../kernel/type.h"
 
+/* EP3 ######################################################## */
+#include "alloc.h"
+/* EP3 ######################################################## */
+
 #define NIL_HOLE (struct hole *) 0
 
 PRIVATE struct hole hole[_NR_HOLES];
@@ -97,6 +101,8 @@ phys_clicks clicks;		/* amount of memory requested */
   return(NO_MEM);
 }
 
+/* EP3 ######################################################## */
+
 PUBLIC phys_clicks alloc_mem_worst_fit(clicks)
 phys_clicks clicks;		/* amount of memory requested */
 {
@@ -125,6 +131,8 @@ phys_clicks clicks;		/* amount of memory requested */
   } while(swap_out());
   return(NO_MEM);
 }
+
+/* EP3 ######################################################## */
 
 /*===========================================================================*
  *				free_mem				     *
