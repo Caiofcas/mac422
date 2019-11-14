@@ -63,11 +63,7 @@ _PROTOTYPE (int (*call_vec[NCALLS]), (void) ) = {
 	do_getset,	/* 46 = setgid	*/
 	do_getset,	/* 47 = getgid	*/
 	no_sys,		/* 48 = (signal)*/
-	
-	/*###############################*/
-	do_memalloc,		/* 49 = memalloc */
-	/*###############################*/
-	
+	no_sys,		/* 49 = unused	*/
 	no_sys,		/* 50 = unused	*/
 	no_sys,		/* 51 = (acct)	*/
 	no_sys,		/* 52 = (phys)	*/
