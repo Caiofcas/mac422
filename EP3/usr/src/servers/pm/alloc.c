@@ -59,23 +59,12 @@ FORWARD _PROTOTYPE( int swap_out, (void)				    );
 #define swap_out()	(0)
 #endif
 
-/*===========================================================================*
- *				alloc_mem				     *
- *===========================================================================*/
-PUBLIC phys_clicks alloc_mem(clicks)
-phys_clicks clicks;		/* amount of memory requested */
-{
 /* EP3 ######################################################## */
-  if(ALLOC_POL == FIRST_FIT)
-    return alloc_mem_first_fit(clicks);
-  else
-    return alloc_mem_worst_fit(clicks);
-}
 
 /*===========================================================================*
  *				alloc_mem_fist_fit				     *
  *===========================================================================*/
-PUBLIC phys_clicks alloc_mem_first_fit(clicks)
+PRIVATE phys_clicks alloc_mem_first_fit(clicks)
 phys_clicks clicks;		/* amount of memory requested */
 {
 /* Allocate a block of memory from the free list using first fit. The block
@@ -118,37 +107,55 @@ phys_clicks clicks;		/* amount of memory requested */
  *				alloc_mem_worst_fit				     *
  *===========================================================================*/
 
-PUBLIC phys_clicks alloc_mem_worst_fit(clicks)
+PRIVATE phys_clicks alloc_mem_worst_fit(clicks)
 phys_clicks clicks;		/* amount of memory requested */
 {
   /*Allocate resquested memory using worst fit.*/
   register struct hole *hp, *prev_ptr;
-  register phys_clicks max;
+  register struct hole *max_hp;
+  
   phys_clicks old_base;
 
   do {
-    hp = hole_head;
-    max = 0;
+    max_hp = hole_head;
+    hp = max_hp->h_next;
     while (hp != NIL_HOLE) { /*Finds max-hole*/
-      if (hp->h_len > max) max = hp->h_len;
+      if (hp->h_len > max_hp->h_len) max_hp = hp;
       hp = hp->h_next;
     }
-    old_base = hp->h_base;	/* remember where it started */
-    hp->h_base += clicks;	/* bite a piece off */
-    hp->h_len -= clicks;	/* ditto */
-    /* Remember new high watermark of used memory. */
-    if(hp->h_base > high_watermark)
-      high_watermark = hp->h_base;
+    if(max_hp->h_len >= clicks){
+      old_base = max_hp->h_base;	/* remember where it started */
+      max_hp->h_base += clicks;	/* bite a piece off */
+      max_hp->h_len -= clicks;	/* ditto */
       
-    /* Delete the hole if used up completely. */
-    if (hp->h_len == 0) del_slot(prev_ptr, hp);
-    /* Return the start address of the acquired block. */
-    return(old_base);
+      /* Remember new high watermark of used memory. */
+      if(max_hp->h_base > high_watermark)
+        high_watermark = max_hp->h_base;
+      
+      /* Delete the hole if used up completely. */
+      if (max_hp->h_len == 0) del_slot(prev_ptr, max_hp);
+      /* Return the start address of the acquired block. */
+      return(old_base);     
+    }
   } while(swap_out());
   return(NO_MEM);
 }
 
 /* EP3 ######################################################## */
+
+/*===========================================================================*
+ *				alloc_mem				     *
+ *===========================================================================*/
+PUBLIC phys_clicks alloc_mem(clicks)
+phys_clicks clicks;		/* amount of memory requested */
+{
+/* EP3 ######################################################## */
+  if(ALLOC_POL == FIRST_FIT)
+    return alloc_mem_first_fit(clicks);
+  else
+    return alloc_mem_worst_fit(clicks);
+/* EP3 ######################################################## */
+}
 
 /*===========================================================================*
  *				free_mem				     *
