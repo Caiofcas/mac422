@@ -429,14 +429,18 @@ int ep;
 }
 
 /* EP3 ######################################################## */
-int do_memalloc(int type)
+int do_memalloc()
 {
+  int type = m_in.m1_i1;
+  int caller_uid = m_in.m1_i2;
+
   /*Validates arg*/
   if(type != FIRST_FIT && type != WORST_FIT) return (EINVAL);
 
   /*Checks for root*/
-
-  /**/
+  if(!caller_uid) return (EXIT);
+  
+  /*Changes pollicy*/
   ALLOC_POL = type;
   return 0;
 }
