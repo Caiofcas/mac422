@@ -429,14 +429,15 @@ int ep;
 }
 
 /* EP3 ######################################################## */
-int do_memalloc(int type, int clicks) 
+int do_memalloc(int type)
 {
-  if (type == FIRST_FIT) {
-    alloc_mem(clicks);
-  } else {
-    alloc_mem_worst_fit(clicks);
-  }
+  /*Validates arg*/
+  if(type != FIRST_FIT && type != WORST_FIT) return (EINVAL);
 
+  /*Checks for root*/
+
+  /**/
+  ALLOC_POL = type;
   return 0;
 }
 /* EP3 ######################################################## */
