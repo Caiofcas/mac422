@@ -48,16 +48,21 @@
 #define IOCTL		  54
 #define FCNTL		  55
 
-/* ######################################################## */
+/* EP2 ######################################################## */
 #define BATCH         57
 #define UNBATCH       58
-/* ######################################################## */
+/* EP2 ######################################################## */
 
 #define EXEC		  59
 #define UMASK		  60 
 #define CHROOT		  61 
 #define SETSID		  62
 #define GETPGRP		  63
+
+/* EP3 ######################################################## */
+#define MEMALLOC      64
+/* EP3 ######################################################## */
+
 
 /* The following are not system calls, but are processed like them. */
 #define UNPAUSE		  65	/* to MM or FS: check for EINTR */

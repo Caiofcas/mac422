@@ -49,6 +49,7 @@ libc_FILES=" \
 	_link.c \
 	_lseek.c \
 	_lstat.c \
+	_memalloc.c \
 	_mkdir.c \
 	_mkfifo.c \
 	_mknod.c \

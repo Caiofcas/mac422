@@ -29,6 +29,10 @@
 #include "../../kernel/config.h"
 #include "../../kernel/type.h"
 
+/* EP3 ######################################################## */
+#include "alloc.h"
+/* EP3 ######################################################## */
+
 #define NIL_HOLE (struct hole *) 0
 
 PRIVATE struct hole hole[_NR_HOLES];
@@ -55,10 +59,12 @@ FORWARD _PROTOTYPE( int swap_out, (void)				    );
 #define swap_out()	(0)
 #endif
 
+/* EP3 ######################################################## */
+
 /*===========================================================================*
- *				alloc_mem				     *
+ *				alloc_mem_fist_fit				     *
  *===========================================================================*/
-PUBLIC phys_clicks alloc_mem(clicks)
+PRIVATE phys_clicks alloc_mem_first_fit(clicks)
 phys_clicks clicks;		/* amount of memory requested */
 {
 /* Allocate a block of memory from the free list using first fit. The block
@@ -71,30 +77,84 @@ phys_clicks clicks;		/* amount of memory requested */
   phys_clicks old_base;
 
   do {
-        prev_ptr = NIL_HOLE;
-	      hp = hole_head;
-	      while (hp != NIL_HOLE && hp->h_base < swap_base) {
-		      if (hp->h_len >= clicks) {
-			      /* We found a hole that is big enough.  Use it. */
-			      old_base = hp->h_base;	/* remember where it started */
-			      hp->h_base += clicks;	/* bite a piece off */
-			      hp->h_len -= clicks;	/* ditto */
+    prev_ptr = NIL_HOLE;
+    hp = hole_head;
+    while (hp != NIL_HOLE && hp->h_base < swap_base) {
+      if (hp->h_len >= clicks) {
+        /* We found a hole that is big enough.  Use it. */
+        old_base = hp->h_base;	/* remember where it started */
+        hp->h_base += clicks;	/* bite a piece off */
+        hp->h_len -= clicks;	/* ditto */
 
-			      /* Remember new high watermark of used memory. */
-			      if(hp->h_base > high_watermark)
-			      	high_watermark = hp->h_base;
+        /* Remember new high watermark of used memory. */
+        if(hp->h_base > high_watermark)
+          high_watermark = hp->h_base;
 
-			      /* Delete the hole if used up completely. */
-			      if (hp->h_len == 0) del_slot(prev_ptr, hp);
+        /* Delete the hole if used up completely. */
+        if (hp->h_len == 0) del_slot(prev_ptr, hp);
 
-			      /* Return the start address of the acquired block. */
-			      return(old_base);
-		      }
-		      prev_ptr = hp;
-		      hp = hp->h_next;
-	      }
+        /* Return the start address of the acquired block. */
+        return(old_base);
+      }
+      prev_ptr = hp;
+      hp = hp->h_next;
+    }
   } while (swap_out());		/* try to swap some other process out */
   return(NO_MEM);
+}
+
+/*===========================================================================*
+ *				alloc_mem_worst_fit				     *
+ *===========================================================================*/
+
+PRIVATE phys_clicks alloc_mem_worst_fit(clicks)
+phys_clicks clicks;		/* amount of memory requested */
+{
+  /*Allocate resquested memory using worst fit.*/
+  register struct hole *hp, *prev_ptr;
+  register struct hole *max_hp;
+  
+  phys_clicks old_base;
+
+  do {
+    max_hp = hole_head;
+    hp = max_hp->h_next;
+    while (hp != NIL_HOLE) { /*Finds max-hole*/
+      if (hp->h_len > max_hp->h_len) max_hp = hp;
+      hp = hp->h_next;
+    }
+    if(max_hp->h_len >= clicks){
+      old_base = max_hp->h_base;	/* remember where it started */
+      max_hp->h_base += clicks;	/* bite a piece off */
+      max_hp->h_len -= clicks;	/* ditto */
+      
+      /* Remember new high watermark of used memory. */
+      if(max_hp->h_base > high_watermark)
+        high_watermark = max_hp->h_base;
+      
+      /* Delete the hole if used up completely. */
+      if (max_hp->h_len == 0) del_slot(prev_ptr, max_hp);
+      /* Return the start address of the acquired block. */
+      return(old_base);     
+    }
+  } while(swap_out());
+  return(NO_MEM);
+}
+
+/* EP3 ######################################################## */
+
+/*===========================================================================*
+ *				alloc_mem				     *
+ *===========================================================================*/
+PUBLIC phys_clicks alloc_mem(clicks)
+phys_clicks clicks;		/* amount of memory requested */
+{
+/* EP3 ######################################################## */
+  if(ALLOC_POL == FIRST_FIT)
+    return alloc_mem_first_fit(clicks);
+  else
+    return alloc_mem_worst_fit(clicks);
+/* EP3 ######################################################## */
 }
 
 /*===========================================================================*
@@ -124,18 +184,18 @@ phys_clicks clicks;		/* number of clicks to free */
    * front of the hole list.
    */
   if (hp == NIL_HOLE || base <= hp->h_base) {
-	/* Block to be freed goes on front of the hole list. */
-	new_ptr->h_next = hp;
-	hole_head = new_ptr;
-	merge(new_ptr);
-	return;
+    /* Block to be freed goes on front of the hole list. */
+    new_ptr->h_next = hp;
+    hole_head = new_ptr;
+    merge(new_ptr);
+    return;
   }
 
   /* Block to be returned does not go on front of hole list. */
   prev_ptr = NIL_HOLE;
   while (hp != NIL_HOLE && base > hp->h_base) {
-	prev_ptr = hp;
-	hp = hp->h_next;
+    prev_ptr = hp;
+    hp = hp->h_next;
   }
 
   /* We found where it goes.  Insert block after 'prev_ptr'. */
@@ -250,21 +310,6 @@ phys_clicks *free;		/* memory size summaries */
   swap_base++;				/* make separate */
   swap_maxsize = 0 - swap_base;		/* maximum we can possibly use */
 #endif
-}
-
-PUBLIC phys_clicks max_hole()
-{
-  /* Scan the hole list and return the largest hole. */
-  register struct hole *hp;
-  register phys_clicks max;
-
-  hp = hole_head;
-  max = 0;
-  while (hp != NIL_HOLE) {
-    if (hp->h_len > max) max = hp->h_len;
-      hp = hp->h_next;
-    }
-  return(max);
 }
 
 /*===========================================================================*

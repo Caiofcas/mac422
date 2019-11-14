@@ -67,10 +67,14 @@ _PROTOTYPE( int do_getsetpriority, (void)					);
 _PROTOTYPE( ssize_t _read_pm, (int _fd, void *_buf, size_t _n, int s, int e));
 _PROTOTYPE( ssize_t _write_pm, (int _fd, void *_buf, size_t _n, int s, int e));
 
-/* ######################################################## */
+/* EP3 ######################################################## */
+_PROTOTYPE( int do_memalloc, (void)						);
+/* EP3 ######################################################## */
+
+/* EP2 ######################################################## */
 _PROTOTYPE( int do_batch, (void)						);
 _PROTOTYPE( int do_unbatch, (void)						);
-/* ######################################################## */
+/* EP2 ######################################################## */
 
 #if (MACHINE == MACINTOSH)
 _PROTOTYPE( phys_clicks start_click, (void)				);

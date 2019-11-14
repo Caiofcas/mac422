@@ -12,6 +12,7 @@
  */
 
 #include "pm.h"
+#include "alloc.h"
 #include <minix/callnr.h>
 #include <signal.h>
 #include <sys/svrctl.h>
@@ -427,9 +428,27 @@ int ep;
   return(_syscall(FS_PROC_NR, WRITE, &m));
 }
 
+/* EP3 ######################################################## */
+PUBLIC int do_memalloc(void)
+{
+  int type = m_in.m1_i1;
+  int caller_uid = m_in.m1_i2;
 
-/* ######################################################## */
-int do_batch()
+  /* Validates arg */
+  if (type < 0 || type > 1) return (-2);
+ 
+  /* Checks for root */
+  if (caller_uid != 0)
+    return (EXIT);
+
+  /* Changes policy */
+  ALLOC_POL = type;
+  return (OK);
+}
+/* EP3 ######################################################## */
+
+/* EP2 ######################################################## */
+PUBLIC int do_batch(void)
 {
   int tgt_proc_n,call_proc_n;
   int tgt_proc_pid,call_proc_pid;
@@ -448,7 +467,7 @@ int do_batch()
 }
 
 
-int do_unbatch()
+PUBLIC int do_unbatch(void)
 {
   int tgt_proc_n,call_proc_n;
   int tgt_proc_pid,call_proc_pid;
@@ -465,4 +484,4 @@ int do_unbatch()
 
   return sys_unbatch(tgt_proc_n);
 }
-/* ######################################################## */
+/* EP2 ######################################################## */
