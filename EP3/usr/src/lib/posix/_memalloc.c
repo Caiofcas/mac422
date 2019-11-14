@@ -5,7 +5,7 @@
 PUBLIC int memalloc(int type)
 {
     message m;
-    int this_pid;
+    int this_uid;
 
     this_uid = getuid();
 
