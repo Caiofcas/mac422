@@ -435,19 +435,20 @@ PUBLIC int do_memalloc(void)
   int caller_uid = m_in.m1_i2;
 
   /* Validates arg */
-  if (type < 0 || type > 1) return (EXIT);
+  if (type < 0 || type > 1) return (-2);
+ 
   /* Checks for root */
-  if (!(caller_uid))
+  if (caller_uid != 0)
     return (EXIT);
 
-  /* Changes pollicy */
+  /* Changes policy */
   ALLOC_POL = type;
-  return 0;
+  return (OK);
 }
 /* EP3 ######################################################## */
 
 /* EP2 ######################################################## */
-int do_batch()
+PUBLIC int do_batch(void)
 {
   int tgt_proc_n,call_proc_n;
   int tgt_proc_pid,call_proc_pid;
@@ -466,7 +467,7 @@ int do_batch()
 }
 
 
-int do_unbatch()
+PUBLIC int do_unbatch(void)
 {
   int tgt_proc_n,call_proc_n;
   int tgt_proc_pid,call_proc_pid;
