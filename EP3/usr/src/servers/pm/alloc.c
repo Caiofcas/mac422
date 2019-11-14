@@ -65,6 +65,19 @@ FORWARD _PROTOTYPE( int swap_out, (void)				    );
 PUBLIC phys_clicks alloc_mem(clicks)
 phys_clicks clicks;		/* amount of memory requested */
 {
+/* EP3 ######################################################## */
+  if(ALLOC_POL == FIRST_FIT)
+    return alloc_mem_first_fit(clicks);
+  else
+    return alloc_mem_worst_fit(clicks);
+}
+
+/*===========================================================================*
+ *				alloc_mem_fist_fit				     *
+ *===========================================================================*/
+PUBLIC phys_clicks alloc_mem_first_fit(clicks)
+phys_clicks clicks;		/* amount of memory requested */
+{
 /* Allocate a block of memory from the free list using first fit. The block
  * consists of a sequence of contiguous bytes, whose length in clicks is
  * given by 'clicks'.  A pointer to the block is returned.  The block is
@@ -101,11 +114,14 @@ phys_clicks clicks;		/* amount of memory requested */
   return(NO_MEM);
 }
 
-/* EP3 ######################################################## */
+/*===========================================================================*
+ *				alloc_mem_worst_fit				     *
+ *===========================================================================*/
 
 PUBLIC phys_clicks alloc_mem_worst_fit(clicks)
 phys_clicks clicks;		/* amount of memory requested */
 {
+  /*Allocate resquested memory using worst fit.*/
   register struct hole *hp, *prev_ptr;
   register phys_clicks max;
   phys_clicks old_base;
@@ -113,7 +129,7 @@ phys_clicks clicks;		/* amount of memory requested */
   do {
     hp = hole_head;
     max = 0;
-    while (hp != NIL_HOLE) {
+    while (hp != NIL_HOLE) { /*Finds max-hole*/
       if (hp->h_len > max) max = hp->h_len;
       hp = hp->h_next;
     }

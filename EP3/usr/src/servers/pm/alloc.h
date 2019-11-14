@@ -1,5 +1,5 @@
-#define FIRST_FIT 1
-#define WORST_FIT 0
+#define FIRST_FIT 0
+#define WORST_FIT 1
 
 typedef unsigned int phys_clicks;
 
