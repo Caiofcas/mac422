@@ -588,10 +588,3 @@ PUBLIC int do_svrctl()
 	return(EINVAL);
   }
 }
-
-/*########################################*/
-PUBLIC int do_open_tmp(void) 
-{
-  return(OK);
-}
-/*########################################*/
