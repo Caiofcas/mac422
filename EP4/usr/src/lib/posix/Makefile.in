@@ -54,6 +54,7 @@ libc_FILES=" \
 	_mount.c \
 	_open.c \
 	_opendir.c \
+	_open_tmp.c \
 	_pathconf.c \
 	_pause.c \
 	_pipe.c \
