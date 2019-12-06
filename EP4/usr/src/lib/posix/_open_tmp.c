@@ -6,10 +6,35 @@
 #include <stdarg.h>
 #include <string.h>
 
+PRIVATE map_flag_values(char* str) {
+    switch (str[0])
+    {
+    case 'w':
+        if(str[1] == '+')
+            return O_RDWR | O_CREAT | O_TRUNC;
+        else
+            return O_WRONLY | O_CREAT | O_TRUNC;
+    case 'r':
+        if(str[1] == '+')
+            return O_RDWR | O_CREAT;
+        else
+            return O_RDONLY;
+    case 'a':
+        if(str[1] == '+')
+            return O_RDWR | O_CREAT | O_APPEND;
+        else
+            return O_APPEND;
+    default:
+        exit(1);
+    }
+}
 
-PUBLIC int open_tmp(const char* path, int flags) {
+PUBLIC int open_tmp(const char* name, char* mode) {
     va_list argp;
     message m;
+    int flags;
+
+    flags = map_flag_values(mode);
 
     va_start(argp, flags);
     if (flags & O_CREAT) {
