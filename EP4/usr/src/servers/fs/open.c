@@ -565,7 +565,19 @@ PUBLIC int do_slink()
 /*########################################*/
 PUBLIC int do_open_tmp(void) 
 {
-  
-  return(OK);
+  int create_mode = 0;		/* is really mode_t but this gives problems */
+  int r;
+
+  /* If O_CREAT is set, open has three parameters, otherwise two. */
+  if (m_in.mode & O_CREAT) {
+		create_mode = m_in.c_mode;	
+		r = fetch_name(m_in.c_name, m_in.name1_length, M1);
+  } else {
+		r = fetch_name(m_in.name, m_in.name_length, M3);
+  }
+
+  if (r != OK) return(err_code); /* name was bad */
+  r = common_open(m_in.mode, create_mode);
+  return(r);
 }
 /*########################################*/
