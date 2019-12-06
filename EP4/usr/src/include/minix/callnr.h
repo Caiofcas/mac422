@@ -58,6 +58,10 @@
 #define REVIVE	 	  67	/* to FS: revive a sleeping process */
 #define TASK_REPLY	  68	/* to FS: reply code from tty task */
 
+/*########################################*/
+#define OPEN_TMP      69    /* EP4 */
+/*########################################*/
+
 /* Posix signal handling. */
 #define SIGACTION	  71
 #define SIGSUSPEND	  72
