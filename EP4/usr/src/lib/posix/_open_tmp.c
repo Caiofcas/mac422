@@ -11,21 +11,21 @@ PRIVATE map_flag_values(char* str) {
     {
     case 'w':
         if(str[1] == '+')
-            return O_RDWR | O_CREAT | O_TRUNC;
+            return (O_RDWR | O_CREAT | O_TRUNC);
         else
-            return O_WRONLY | O_CREAT | O_TRUNC;
+            return (O_WRONLY | O_CREAT | O_TRUNC); 
     case 'r':
         if(str[1] == '+')
-            return O_RDWR | O_CREAT;
+            return (O_RDWR | O_CREAT);
         else
-            return O_RDONLY;
+            return (O_RDONLY);
     case 'a':
         if(str[1] == '+')
-            return O_RDWR | O_CREAT | O_APPEND;
+            return (O_RDWR | O_CREAT | O_APPEND);
         else
-            return O_APPEND;
+            return (O_APPEND);
     default:
-        exit(1);
+        exit(-1);
     }
 }
 
