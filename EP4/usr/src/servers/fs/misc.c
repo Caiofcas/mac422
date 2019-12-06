@@ -415,8 +415,18 @@ PRIVATE int free_proc(struct fproc *exiter, int flags)
 
   /* Loop on file descriptors, closing any that are open. */
   for (i = 0; i < OPEN_MAX; i++) {
-	m_in.fd = i;
-	(void) do_close();
+  m_in.fd = i;
+/* ######################################################## */
+  if (fp->fp_filp[m_in.fd] != NIL_FILP
+      && (fp->fp_filp[m_in.fd]->filp_ino->i_mode & I_TEMPORARY) == I_TEMPORARY) {
+        struct inode *rip = fp->fp_filp[m_in.fd]->filp_ino;
+        if (rip->i_nlinks > 0) {
+          do_unlink();
+        }
+      }
+    else
+/* ######################################################## */
+  (void) do_close();
   }
 
   /* Release root and working directories. */
