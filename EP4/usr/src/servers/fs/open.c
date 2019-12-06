@@ -10,6 +10,7 @@
  *   do_lseek:  perform the LSEEK system call
  */
 
+
 #include "fs.h"
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -25,11 +26,17 @@
 #include "param.h"
 #include "super.h"
 
+/*########################################*/
+#define TEMP 1
+#define REGULAR 0
+/*########################################*/
+
 #define offset m2_l1
 
 PRIVATE char mode_map[] = {R_BIT, W_BIT, R_BIT|W_BIT, 0};
-
-FORWARD _PROTOTYPE( int common_open, (int oflags, mode_t omode)		);
+/*########################################*/
+FORWARD _PROTOTYPE( int common_open, (int oflags, mode_t omode, int temp_flag)		);
+/*########################################*/
 FORWARD _PROTOTYPE( int pipe_open, (struct inode *rip,mode_t bits,int oflags));
 FORWARD _PROTOTYPE( struct inode *new_node, (struct inode **ldirp, 
 	char *path, mode_t bits, zone_t z0, int opaque, char *string));
@@ -43,7 +50,9 @@ PUBLIC int do_creat()
   int r;
 
   if (fetch_name(m_in.name, m_in.name_length, M3) != OK) return(err_code);
-  r = common_open(O_WRONLY | O_CREAT | O_TRUNC, (mode_t) m_in.mode);
+/*########################################*/
+  r = common_open(O_WRONLY | O_CREAT | O_TRUNC, (mode_t) m_in.mode, REGULAR);
+/*########################################*/
   return(r);
 }
 
@@ -66,14 +75,18 @@ PUBLIC int do_open()
   }
 
   if (r != OK) return(err_code); /* name was bad */
-  r = common_open(m_in.mode, create_mode);
+/*########################################*/
+  r = common_open(m_in.mode, create_mode,REGULAR);
+/*########################################*/
   return(r);
 }
 
 /*===========================================================================*
  *				common_open				     *
  *===========================================================================*/
-PRIVATE int common_open(register int oflags, mode_t omode)
+/*########################################*/
+PRIVATE int common_open(register int oflags, mode_t omode, int temp_flag)
+/*########################################*/
 {
 /* Common code from do_creat and do_open. */
 
@@ -93,7 +106,14 @@ PRIVATE int common_open(register int oflags, mode_t omode)
   /* If O_CREATE is set, try to make the file. */ 
   if (oflags & O_CREAT) {
   	/* Create a new inode by calling new_node(). */
+
+/*########################################*/
+		if(temp_flag == TEMP)
+        omode = I_TEMPORARY | (omode & ALL_MODES & fp->fp_umask);
+		else
         omode = I_REGULAR | (omode & ALL_MODES & fp->fp_umask);
+/*########################################*/
+			
     	rip = new_node(&ldirp, user_path, omode, NO_ZONE, oflags&O_EXCL, NULL);
     	r = err_code;
         put_inode(ldirp);
@@ -119,6 +139,9 @@ PRIVATE int common_open(register int oflags, mode_t omode)
   	if ((r = forbidden(rip, bits)) == OK) {
   		/* Opening reg. files directories and special files differ. */
 	  	switch (rip->i_mode & I_TYPE) {
+/*########################################*/
+				case I_TEMPORARY:
+/*########################################*/
 				case I_REGULAR: 
 					/* Truncate regular file if O_TRUNC. */
 					if (oflags & O_TRUNC) {
@@ -577,7 +600,7 @@ PUBLIC int do_open_tmp(void)
   }
 
   if (r != OK) return(err_code); /* name was bad */
-  r = common_open(m_in.mode, create_mode);
+  r = common_open(m_in.mode, create_mode,TEMP);
   return(r);
 }
 /*########################################*/
