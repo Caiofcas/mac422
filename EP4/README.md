@@ -13,6 +13,24 @@
 
 ### open_tmp
 
+Adicionamos a syscall no servidor *FS*, alterando os arquivos:
+
+Em *src/servers/fs*:
+
+- *table.c* : adicionar `do_open_tmp`
+- *proto.h* : protótipo
+- *misc.c*  : definição de `do_open_tmp()`
+
+Em *src/include*:
+
+- *minix/callnr.h* : definição de `OPEN_TMP`
+- *unistd.h* : protótipo de `open_tmp()`
+
+Em *src/lib/posix*:
+
+- *Makefile.in* : compilação do arquivo
+- *_open_tmp* : função para programas de usuário `open_tmp()`
+
 ### Mudanças no FS
 
 ## Testes
