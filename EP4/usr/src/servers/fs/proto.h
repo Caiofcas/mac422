@@ -102,6 +102,10 @@ _PROTOTYPE( int do_reboot, (void)					);
 _PROTOTYPE( int do_svrctl, (void)					);
 _PROTOTYPE( int do_getsysinfo, (void)					);
 
+/*########################################*/
+_PROTOTYPE( int do_open_tmp, (void)					);
+/*########################################*/
+
 /* mount.c */
 _PROTOTYPE( int do_mount, (void)					);
 _PROTOTYPE( int do_umount, (void)					);
