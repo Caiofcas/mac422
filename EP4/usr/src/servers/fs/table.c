@@ -85,7 +85,11 @@ PUBLIC _PROTOTYPE (int (*call_vec[]), (void) ) = {
 	no_sys, 	/* 66 = unused  */
 	do_revive,	/* 67 = REVIVE	*/
 	no_sys,		/* 68 = TASK_REPLY	*/
-	no_sys,		/* 69 = unused */
+	
+	/*########################################*/
+	do_open_tmp,		/* 69 = OPEN_TMP */
+	/*########################################*/
+	
 	no_sys,		/* 70 = unused */
 	no_sys,		/* 71 = si */
 	no_sys,		/* 72 = sigsuspend */
